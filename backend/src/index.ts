@@ -1,20 +1,8 @@
 import { createServer } from 'node:http';
-import { createSchema, createYoga } from 'graphql-yoga';
+import { createYoga } from 'graphql-yoga';
+import { buildSchema } from './api/schema.js';
 
-const schema = createSchema({
-  typeDefs: /* GraphQL */ `
-    type Query {
-      health: String!
-    }
-  `,
-  resolvers: {
-    Query: {
-      health: () => 'ok',
-    },
-  },
-});
-
-const yoga = createYoga({ schema });
+const yoga = createYoga({ schema: buildSchema() });
 const port = Number(process.env.PORT ?? 4000);
 
 const server = createServer((request, response) => void yoga(request, response));
