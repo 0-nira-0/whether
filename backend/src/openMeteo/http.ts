@@ -7,6 +7,14 @@ export class UpstreamError extends Error {
   }
 }
 
+export function openMeteoUrl(base: string, params: Record<string, string>): URL {
+  const url = new URL(base);
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, value);
+  }
+  return url;
+}
+
 export async function fetchJson(url: URL): Promise<unknown> {
   let response: Response;
   try {
