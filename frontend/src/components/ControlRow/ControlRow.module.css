@@ -1,0 +1,68 @@
+.band {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 22px var(--page-padding);
+  border-bottom: 1px solid var(--rule);
+}
+
+.fieldWrap {
+  position: relative;
+  width: 300px;
+}
+
+.field {
+  width: 100%;
+  padding: 14px 22px;
+  font-size: 17px;
+  background: var(--card);
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius);
+  outline: none;
+}
+
+.field::placeholder {
+  color: var(--placeholder);
+}
+
+.field:focus {
+  border-color: var(--focus);
+}
+
+.fieldAttached {
+  composes: field;
+  border-color: var(--focus);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.segments {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.segment {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-left-width: 0;
+  padding: 15px 26px;
+  font-size: 15px;
+  color: var(--body);
+}
+
+.segments > :first-child {
+  border-left-width: 1px;
+  border-radius: 9px 0 0 9px;
+}
+
+.segments > :last-child {
+  border-radius: 0 9px 9px 0;
+}
+
+.segmentActive {
+  composes: segment;
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+  color: var(--card);
+  font-weight: 600;
+}

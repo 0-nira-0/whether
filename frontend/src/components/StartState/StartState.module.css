@@ -1,0 +1,18 @@
+.centre {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 110px var(--page-padding) 150px;
+}
+
+.line {
+  margin: 0;
+  max-width: 24ch;
+  text-align: center;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 66px;
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+}

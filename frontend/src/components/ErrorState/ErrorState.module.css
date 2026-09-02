@@ -1,0 +1,10 @@
+.retry {
+  margin-top: 8px;
+  padding: 13px 28px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--card);
+  background: var(--brand);
+  border: none;
+  border-radius: var(--radius);
+}

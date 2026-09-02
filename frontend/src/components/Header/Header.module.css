@@ -1,0 +1,35 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px var(--page-padding);
+  border-bottom: 1px solid var(--rule);
+}
+
+.lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mark {
+  display: block;
+  flex: none;
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-size: 21px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 14px;
+  color: var(--body);
+}
+
+.units {
+  color: var(--muted);
+}

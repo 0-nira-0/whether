@@ -1,0 +1,60 @@
+:root {
+  --ground: #f7f0e7;
+  --card: #ffffff;
+  --cream: #ede4d8;
+  --row-highlight: #f6f1e8;
+  --green-wash: #f1f6f2;
+
+  --rule: #e6dccb;
+  --card-border: #e0d5c4;
+  --field-border: #cfc2ae;
+  --focus: #14453a;
+
+  --ink: #1c1b19;
+  --body: #3a3a36;
+  --muted: #5c564c;
+  --label: #84847d;
+  --placeholder: #9b9b94;
+  --ghost: #b8ae9f;
+
+  --excellent: #14503f;
+  --good: #3d8265;
+  --mediocre: #c08a2e;
+  --poor: #a8503a;
+  --brand: #14503f;
+  --brand-dark: #14453a;
+
+  --page-padding: 40px;
+  --radius: 10px;
+
+  --sans: 'Work Sans', system-ui, sans-serif;
+  --serif: 'Newsreader', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
