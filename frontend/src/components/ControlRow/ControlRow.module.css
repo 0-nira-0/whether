@@ -63,7 +63,8 @@
 }
 
 .button:disabled {
-  opacity: 0.45;
+  color: var(--label);
+  background: var(--cream);
   cursor: default;
 }
 

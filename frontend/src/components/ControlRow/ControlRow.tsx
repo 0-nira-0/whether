@@ -50,7 +50,11 @@ export function ControlRow({
               <CityList suggestions={suggestions} onPick={onPlacePick} />
             )}
           </div>
-          <button className={styles.button} type="submit" disabled={busy || query.trim() === ''}>
+          <button
+            className={styles.button}
+            type="submit"
+            disabled={busy || query.trim() === '' || activity === null}
+          >
             Search
           </button>
         </div>

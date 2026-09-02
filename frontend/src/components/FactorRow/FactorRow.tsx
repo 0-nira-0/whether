@@ -1,5 +1,5 @@
 import type { Factor } from '../../api/forecast';
-import { BAND_COLOUR } from '../../bands';
+import { factorColour } from '../../bands';
 import { useUnits } from '../../hooks/useUnits';
 import { factorSentence } from '../../sentences';
 import { measurement } from '../../units';
@@ -11,7 +11,7 @@ export function FactorRow({ factor }: { factor: Factor }) {
     <li className={styles.row}>
       <div className={styles.head}>
         <span className={styles.name}>{factor.name}</span>
-        <span className={styles.value} style={{ color: BAND_COLOUR[factor.band] }}>
+        <span className={styles.value} style={{ color: factorColour(factor) }}>
           {measurement(factor.value, factor.unit, units, factor.decimals)}
         </span>
       </div>

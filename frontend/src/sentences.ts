@@ -1,4 +1,5 @@
 import type { Cap, ContextLine, Factor, Unavailable } from './api/forecast';
+import { placementOf } from './bands';
 import { inUnits, measurement, number, wholeMeasurement, type Units } from './units';
 
 export function factorSentence(factor: Factor, units: Units): string {
@@ -15,12 +16,7 @@ export function factorSentence(factor: Factor, units: Units): string {
     : openAbove
       ? `from ${bound(from)}`
       : `${number(inUnits(from, factor.unit, units).value, factor.decimals)} to ${bound(to)}`;
-  const where =
-    !openBelow && factor.value < from
-      ? 'below'
-      : !openAbove && factor.value > to
-        ? 'above'
-        : 'inside';
+  const where = placementOf(factor);
   if (factor.effect !== null && where === 'inside') {
     return `${measured}, ${effectClause(factor.effect, factor.contribution)}`;
   }
