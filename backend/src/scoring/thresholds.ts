@@ -3,7 +3,9 @@ import type {
   DaytimeWindow,
   FactorDefinition,
   IndoorComponent,
+  Measure,
   Provenance,
+  SeaMeasure,
 } from './types.js';
 
 type Labelled<Shape> = Shape & { provenance: Provenance; source: string };
@@ -16,7 +18,7 @@ export const ACTIVE_HOURS: Labelled<DaytimeWindow> = {
     'one window for all four activities: a traveller is out between breakfast and dinner; rain at 3 a.m. is irrelevant to any of them',
 };
 
-export const OUTDOOR_FACTORS: FactorDefinition[] = [
+export const OUTDOOR_FACTORS: FactorDefinition<Measure>[] = [
   {
     name: 'Precipitation',
     measure: 'precipitationMm',
@@ -78,6 +80,84 @@ export const OUTDOOR_FACTORS: FactorDefinition[] = [
       'HCI optimum is 11–20 % cover, not clear sky; the overcast floor of 40 and clear-sky 85 are ours',
   },
 ];
+
+export const SURFING_FACTORS: FactorDefinition<SeaMeasure>[] = [
+  {
+    name: 'Wave height',
+    measure: 'waveHeightM',
+    unit: 'm',
+    decimals: 1,
+    weight: 0.35,
+    curve: [
+      { at: 0.2, score: 0 },
+      { at: 0.8, score: 100 },
+      { at: 2, score: 100 },
+      { at: 4, score: 0 },
+    ],
+    provenance: 'Assumed',
+    source:
+      'a leisure traveller is not an expert: waist-to-head high is the comfortable band, 4 m is well past prudent',
+  },
+  {
+    name: 'Swell period',
+    measure: 'swellPeriodS',
+    unit: 's',
+    weight: 0.3,
+    curve: [
+      { at: 5, score: 10 },
+      { at: 6, score: 50 },
+      { at: 8, score: 80 },
+      { at: 10, score: 100 },
+    ],
+    provenance: 'Sourced',
+    source:
+      'surfertoday.com swell period bands: 1–5 s poor chop, 6–8 average, 8–10 good, 10–12 ground swell; straight lines between bands are ours',
+  },
+  {
+    name: 'Wind',
+    measure: 'windKmh',
+    unit: 'km/h',
+    weight: 0.2,
+    curve: [
+      { at: 0, score: 100 },
+      { at: 12, score: 100 },
+      { at: 40, score: 0 },
+    ],
+    provenance: 'Assumed',
+    source:
+      'the shape follows surf-forecast.com, whose rating drops in proportion to wind speed; strength only, the coastline orientation, and so onshore versus offshore, is not known',
+  },
+  {
+    name: 'Sea temperature',
+    measure: 'seaSurfaceTempC',
+    unit: '°C',
+    weight: 0.15,
+    curve: [
+      { at: 5, score: 0 },
+      { at: 18, score: 100 },
+      { at: 24, score: 100 },
+      { at: 32, score: 0 },
+    ],
+    provenance: 'Assumed',
+    source: 'the wetsuit-free comfort band for someone without specialist equipment',
+  },
+];
+
+export const FLAT_SEA_CAP: Labelled<{ belowM: number; ceiling: number }> = {
+  belowM: 0.3,
+  ceiling: 10,
+  provenance: 'Assumed',
+  source:
+    'below 0.3 m there is nothing to stand up on, flat is not dangerous, just nothing to surf',
+};
+
+export const CHOP_CAP: Labelled<{ periodUpToS: number; ceiling: number }> = {
+  periodUpToS: 5,
+  ceiling: 15,
+  provenance: 'Sourced',
+  source:
+    'surfertoday.com: 1–5 s is wind chop, not swell; without this cap a warm, calm lake day floats to 40 on wind and water temperature alone (Chicago must stay near 15)',
+};
 
 export const THUNDERSTORM_CODES: Labelled<{ codes: readonly number[] }> = {
   codes: [95, 96, 99],

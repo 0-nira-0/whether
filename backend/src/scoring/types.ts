@@ -16,19 +16,31 @@ export type DayMeasurements = {
   freezingRainHours: number;
 };
 
-export type Measure = Exclude<keyof DayMeasurements, 'date'>;
+export type SeaMeasurements = {
+  date: string;
+  waveHeightM: number;
+  waveHeightMaxM: number;
+  swellPeriodS: number;
+  seaSurfaceTempC: number | null;
+  windKmh: number;
+  thunderstormHours: number;
+};
 
-export type FactorDefinition = {
+export type Measure = Exclude<keyof DayMeasurements, 'date'>;
+export type SeaMeasure = Exclude<keyof SeaMeasurements, 'date'>;
+
+export type FactorDefinition<Key extends string> = {
   name: string;
-  measure: Measure;
+  measure: Key;
   unit: string;
+  decimals?: number;
   weight: number;
   curve: Breakpoint[];
   provenance: Provenance;
   source: string;
 };
 
-export type IndoorComponent = Omit<FactorDefinition, 'weight'>;
+export type IndoorComponent = Omit<FactorDefinition<Measure>, 'weight'>;
 
 export type Factor = {
   name: string;
@@ -50,3 +62,7 @@ export type DayScore = {
   cap: Cap | null;
   factors: Factor[];
 };
+
+export type ActivityScore =
+  | { status: 'SCORED'; days: DayScore[]; context: string[] }
+  | { status: 'UNAVAILABLE'; reason: string };

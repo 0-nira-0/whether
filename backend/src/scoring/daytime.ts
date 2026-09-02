@@ -3,8 +3,16 @@ import { FREEZING_RAIN_CODES, THUNDERSTORM_CODES } from './thresholds.js';
 import type { DayMeasurements, DaytimeWindow } from './types.js';
 
 export function measureDays(point: ForecastPoint, window: DaytimeWindow): DayMeasurements[] {
+  const hoursByDate = hoursInWindow(point.hourly.time, window);
+  return point.daily.time.flatMap((date) => {
+    const day = measureDay(point, date, hoursByDate.get(date) ?? []);
+    return day === null ? [] : [day];
+  });
+}
+
+export function hoursInWindow(time: string[], window: DaytimeWindow): Map<string, number[]> {
   const hoursByDate = new Map<string, number[]>();
-  point.hourly.time.forEach((timestamp, index) => {
+  time.forEach((timestamp, index) => {
     const hour = Number(timestamp.slice(11, 13));
     if (hour >= window.fromHour && hour < window.toHour) {
       const date = timestamp.slice(0, 10);
@@ -13,10 +21,30 @@ export function measureDays(point: ForecastPoint, window: DaytimeWindow): DayMea
       hoursByDate.set(date, hours);
     }
   });
-  return point.daily.time.flatMap((date) => {
-    const day = measureDay(point, date, hoursByDate.get(date) ?? []);
-    return day === null ? [] : [day];
+  return hoursByDate;
+}
+
+export function pick(series: (number | null)[], hours: number[]): number[] {
+  return hours.flatMap((hour) => {
+    const value = series[hour];
+    return value === null || value === undefined ? [] : [value];
   });
+}
+
+export function sum(values: number[]): number {
+  return values.reduce((total, value) => total + value, 0);
+}
+
+export function mean(values: number[]): number | null {
+  return values.length === 0 ? null : sum(values) / values.length;
+}
+
+export function max(values: number[]): number | null {
+  return values.length === 0 ? null : Math.max(...values);
+}
+
+export function countCodes(codes: number[], wanted: readonly number[]): number {
+  return codes.filter((code) => wanted.includes(code)).length;
 }
 
 function measureDay(point: ForecastPoint, date: string, hours: number[]): DayMeasurements | null {
@@ -37,28 +65,7 @@ function measureDay(point: ForecastPoint, date: string, hours: number[]): DayMea
     cloudCoverPct,
     precipitationMm: sum(pick(hourly.precipitation, hours)),
     snowfallCm: sum(pick(hourly.snowfall, hours)),
-    thunderstormHours: weatherCodes.filter((code) => THUNDERSTORM_CODES.codes.includes(code))
-      .length,
-    freezingRainHours: weatherCodes.filter((code) => FREEZING_RAIN_CODES.codes.includes(code))
-      .length,
+    thunderstormHours: countCodes(weatherCodes, THUNDERSTORM_CODES.codes),
+    freezingRainHours: countCodes(weatherCodes, FREEZING_RAIN_CODES.codes),
   };
-}
-
-function pick(series: (number | null)[], hours: number[]): number[] {
-  return hours.flatMap((hour) => {
-    const value = series[hour];
-    return value === null || value === undefined ? [] : [value];
-  });
-}
-
-function sum(values: number[]): number {
-  return values.reduce((total, value) => total + value, 0);
-}
-
-function mean(values: number[]): number | null {
-  return values.length === 0 ? null : sum(values) / values.length;
-}
-
-function max(values: number[]): number | null {
-  return values.length === 0 ? null : Math.max(...values);
 }
