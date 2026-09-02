@@ -1,0 +1,42 @@
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  border-top: 1px solid var(--rule);
+}
+
+.question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  font-size: 17px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.question::-webkit-details-marker {
+  display: none;
+}
+
+.plus {
+  color: var(--label);
+  font-size: 20px;
+}
+
+.row[open] .plus {
+  transform: rotate(45deg);
+}
+
+.answer {
+  margin: 0;
+  padding: 0 0 18px;
+  max-width: 76ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--body);
+  text-wrap: pretty;
+}

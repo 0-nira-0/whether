@@ -1,8 +1,15 @@
-export const ACTIVITIES = [
-  { value: 'SURFING', label: 'Surfing' },
-  { value: 'SKIING', label: 'Skiing' },
-  { value: 'OUTDOOR_SIGHTSEEING', label: 'Outdoor' },
-  { value: 'INDOOR_SIGHTSEEING', label: 'Indoor' },
+export const ACTIVITY_VALUES = [
+  'SURFING',
+  'SKIING',
+  'OUTDOOR_SIGHTSEEING',
+  'INDOOR_SIGHTSEEING',
 ] as const;
 
-export type Activity = (typeof ACTIVITIES)[number]['value'];
+export type Activity = (typeof ACTIVITY_VALUES)[number];
+
+export const ACTIVITY_LABELS: Record<Activity, string> = {
+  SURFING: 'Surfing',
+  SKIING: 'Skiing',
+  OUTDOOR_SIGHTSEEING: 'Outdoor',
+  INDOOR_SIGHTSEEING: 'Indoor',
+};

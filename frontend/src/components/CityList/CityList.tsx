@@ -25,9 +25,9 @@ export function CityList({ places, onPick }: CityListProps) {
     );
   }
   return (
-    <ul className={styles.list}>
+    <ul className={styles.list} role="listbox">
       {places.map((place, index) => (
-        <li key={place.id}>
+        <li key={place.id} role="option" aria-selected={index === 0}>
           <button
             type="button"
             className={index === 0 ? styles.rowFirst : styles.row}

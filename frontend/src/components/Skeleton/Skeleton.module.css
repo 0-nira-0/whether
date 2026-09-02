@@ -1,0 +1,33 @@
+.frame {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+}
+
+.card {
+  height: 118px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+}
+
+.block {
+  height: 420px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.55;
+  }
+}

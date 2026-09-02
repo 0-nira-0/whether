@@ -19,10 +19,14 @@
 
   --excellent: #14503f;
   --good: #3d8265;
-  --mediocre: #c08a2e;
+  --decent: #c08a2e;
+  --mediocre: #b0693a;
   --poor: #a8503a;
   --brand: #14503f;
   --brand-dark: #14453a;
+  --zone-good: #93bda6;
+  --zone-marginal: #ebd4a2;
+  --zone-poor: #e3c4b6;
 
   --page-padding: 40px;
   --radius: 10px;

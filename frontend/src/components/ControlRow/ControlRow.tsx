@@ -1,59 +1,74 @@
-import { ACTIVITIES, type Activity } from '../../activities';
+import type { FormEvent } from 'react';
+import { ACTIVITY_LABELS, ACTIVITY_VALUES, type Activity } from '../../activities';
 import type { Place } from '../../api/places';
+import type { Suggestions } from '../../hooks/useSearch';
 import { CityList } from '../CityList/CityList';
 import styles from './ControlRow.module.css';
 
 type ControlRowProps = {
   query: string;
   onQueryChange: (query: string) => void;
+  suggestions: Suggestions;
+  onPlacePick: (place: Place) => void;
   activity: Activity | null;
   onActivityChange: (activity: Activity) => void;
-  places: Place[] | null;
-  onPlacePick: (place: Place) => void;
-  searching: boolean;
+  onSubmit: () => void;
+  busy: boolean;
 };
 
 export function ControlRow({
   query,
   onQueryChange,
+  suggestions,
+  onPlacePick,
   activity,
   onActivityChange,
-  places,
-  onPlacePick,
-  searching,
+  onSubmit,
+  busy,
 }: ControlRowProps) {
-  const listOpen = searching || places !== null;
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    onSubmit();
+  }
 
   return (
-    <div className={styles.band}>
-      <div className={styles.fieldWrap}>
-        <input
-          className={listOpen ? styles.fieldAttached : styles.field}
-          value={query}
-          onChange={(event) => {
-            onQueryChange(event.target.value);
-          }}
-          placeholder="Where do you want to go?"
-          aria-label="Place to score"
-          autoComplete="off"
-        />
-        {listOpen && <CityList places={places} onPick={onPlacePick} />}
-      </div>
-
-      <div className={styles.segments} role="group" aria-label="Activity">
-        {ACTIVITIES.map(({ value, label }) => (
-          <button
-            key={value}
-            type="button"
-            className={value === activity ? styles.segmentActive : styles.segment}
-            onClick={() => {
-              onActivityChange(value);
-            }}
-          >
-            {label}
+    <form className={styles.band} onSubmit={submit}>
+      <div className={styles.row}>
+        <div className={styles.search}>
+          <div className={styles.fieldWrap}>
+            <input
+              className={suggestions === 'closed' ? styles.field : styles.fieldAttached}
+              value={query}
+              onChange={(event) => {
+                onQueryChange(event.target.value);
+              }}
+              placeholder="Search a place"
+              aria-label="Place to score"
+              autoComplete="off"
+            />
+            {suggestions !== 'closed' && <CityList places={suggestions} onPick={onPlacePick} />}
+          </div>
+          <button className={styles.button} type="submit" disabled={busy || query.trim() === ''}>
+            Search
           </button>
-        ))}
+        </div>
+
+        <div className={styles.segments} role="group" aria-label="Activity">
+          {ACTIVITY_VALUES.map((value) => (
+            <button
+              key={value}
+              type="button"
+              className={value === activity ? styles.segmentActive : styles.segment}
+              onClick={() => {
+                onActivityChange(value);
+              }}
+            >
+              {ACTIVITY_LABELS[value]}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+      {busy && <div className={styles.progress} />}
+    </form>
   );
 }

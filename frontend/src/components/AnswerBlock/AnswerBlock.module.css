@@ -1,0 +1,82 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 44px 48px 60px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.verdict {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 28px;
+  text-align: center;
+}
+
+.reason {
+  margin: 0;
+  max-width: 48ch;
+  font-family: var(--serif);
+  font-size: 23px;
+  line-height: 1.4;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.context {
+  margin: 0;
+  max-width: 70ch;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--muted);
+}
+
+.hint {
+  margin: 8px 0 32px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.heading {
+  align-self: flex-start;
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--label);
+}
+
+.cap {
+  align-self: stretch;
+  margin: 0;
+  padding: 14px 18px;
+  font-size: 15px;
+  line-height: 1.5;
+  border: 1px solid var(--poor);
+  border-radius: 8px;
+}
+
+.capRule {
+  font-weight: 600;
+  color: var(--poor);
+}
+
+.factors {
+  align-self: stretch;
+  margin: 0 0 32px;
+  padding: 0;
+  list-style: none;
+}
+
+.questions {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

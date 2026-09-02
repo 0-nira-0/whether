@@ -1,0 +1,14 @@
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px var(--page-padding) 0;
+}
+
+.place {
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--label);
+}

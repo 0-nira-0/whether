@@ -1,9 +1,20 @@
 .band {
+  position: relative;
+  border-bottom: 1px solid var(--rule);
+}
+
+.row {
   display: flex;
   align-items: center;
   gap: 26px;
   padding: 22px var(--page-padding);
-  border-bottom: 1px solid var(--rule);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
 }
 
 .fieldWrap {
@@ -41,6 +52,21 @@
   justify-content: flex-end;
 }
 
+.button {
+  padding: 15px 32px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--card);
+  background: var(--brand);
+  border: none;
+  border-radius: var(--radius);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .segment {
   background: var(--card);
   border: 1px solid var(--card-border);
@@ -65,4 +91,13 @@
   border-color: var(--brand-dark);
   color: var(--card);
   font-weight: 600;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 100%;
+  background: var(--brand);
 }
