@@ -2,7 +2,7 @@ import type { ContextLine, Day } from '../../api/forecast';
 import { BAND_COLOUR, BAND_WORD } from '../../bands';
 import { longDate } from '../../dates';
 import { useUnits } from '../../hooks/useUnits';
-import { capSentence, contextSentence, factorSentence } from '../../sentences';
+import { capSentence, contextSentence } from '../../sentences';
 import { FactorRow } from '../FactorRow/FactorRow';
 import { Qa } from '../Qa/Qa';
 import { ScoreRing } from '../ScoreRing/ScoreRing';
@@ -10,20 +10,14 @@ import styles from './AnswerBlock.module.css';
 
 export function AnswerBlock({ day, context }: { day: Day; context: ContextLine[] }) {
   const { units } = useUnits();
-  const leading = day.factors[0];
-  const reason =
-    day.cap !== null
-      ? capSentence(day.cap, units)
-      : leading === undefined
-        ? undefined
-        : factorSentence(leading, units);
+  const capped = day.cap === null ? undefined : capSentence(day.cap, units);
   return (
     <section className={styles.block}>
       <ScoreRing score={day.score} band={day.band} />
       <h2 className={styles.verdict} style={{ color: BAND_COLOUR[day.band] }}>
         {BAND_WORD[day.band]} on {longDate(day.date)}
       </h2>
-      {reason !== undefined && <p className={styles.reason}>{reason}</p>}
+      {capped !== undefined && <p className={styles.reason}>{capped}</p>}
       {context.map((line) => (
         <p key={line.kind} className={styles.context}>
           {contextSentence(line, units)}
