@@ -12,3 +12,9 @@
   letter-spacing: 0.14em;
   color: var(--label);
 }
+
+@media (max-width: 640px) {
+  .result {
+    gap: 14px;
+  }
+}

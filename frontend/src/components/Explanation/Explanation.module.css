@@ -22,3 +22,13 @@
   color: var(--body);
   text-wrap: pretty;
 }
+
+@media (max-width: 640px) {
+  .headline {
+    font-size: 24px;
+  }
+
+  .copy {
+    font-size: 15px;
+  }
+}

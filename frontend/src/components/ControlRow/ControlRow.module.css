@@ -101,3 +101,37 @@
   width: 100%;
   background: var(--brand);
 }
+
+@media (max-width: 640px) {
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .search {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fieldWrap {
+    width: 100%;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .segments {
+    flex: none;
+    justify-content: stretch;
+  }
+
+  .segment {
+    flex: 1;
+    padding: 12px 0;
+    font-size: 14px;
+  }
+}

@@ -16,3 +16,13 @@
   line-height: 1.14;
   letter-spacing: -0.015em;
 }
+
+@media (max-width: 640px) {
+  .centre {
+    padding: 60px var(--page-padding) 80px;
+  }
+
+  .line {
+    font-size: 36px;
+  }
+}

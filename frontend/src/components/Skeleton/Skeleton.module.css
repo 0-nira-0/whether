@@ -31,3 +31,13 @@
     opacity: 0.55;
   }
 }
+
+@media (max-width: 640px) {
+  .grid {
+    gap: 6px;
+  }
+
+  .card {
+    height: 76px;
+  }
+}
