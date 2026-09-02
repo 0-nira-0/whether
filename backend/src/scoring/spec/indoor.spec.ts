@@ -84,15 +84,12 @@ describe('scoring a day for indoor sightseeing', () => {
     expect(idealOf('Temperature')).toBeNull();
   });
 
-  it('scores each factor by how much it favours indoors: rain at full relief is 100, a gale is poor', () => {
-    const factorsOf = (measured: DayMeasurements) => scoreIndoorDay(measured).factors;
-    const rain = factorsOf(blizzard).find((factor) => factor.name === 'Precipitation');
-    const gusts = factorsOf(blizzard).find((factor) => factor.name === 'Wind gusts');
-    const calm = factorsOf(perfectOutside).find((factor) => factor.name === 'Wind gusts');
-    expect(rain?.score).toBe(100);
-    expect(rain?.band).toBe('Excellent');
-    expect(gusts?.score).toBeLessThan(50);
-    expect(calm?.score).toBe(100);
+  it('bands each component by how much it favours indoors: full relief is excellent, a gale is not', () => {
+    const bandOf = (measured: DayMeasurements, name: string) =>
+      scoreIndoorDay(measured).factors.find((factor) => factor.name === name)?.band;
+    expect(bandOf(blizzard, 'Precipitation')).toBe('Excellent');
+    expect(bandOf(blizzard, 'Wind gusts')).toBe('Mediocre');
+    expect(bandOf(perfectOutside, 'Wind gusts')).toBe('Excellent');
   });
 
   it('leads with the factor that moved the score most', () => {

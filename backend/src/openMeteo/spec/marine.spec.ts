@@ -12,8 +12,6 @@ const biarritzCell = {
   hourly: {
     time: threeHours,
     wave_height: [1.32, 1.24, 1.2],
-    wave_period: [8, 8, 8.1],
-    swell_wave_height: [1.12, 1.08, 1.05],
     swell_wave_period: [7.95, 7.8, 7.8],
     sea_surface_temperature: [23.9, 23.9, 23.8],
   },
@@ -28,8 +26,6 @@ const warsawHasNoWater = {
   hourly: {
     time: threeHours,
     wave_height: [null, null, null],
-    wave_period: [null, null, null],
-    swell_wave_height: [null, null, null],
     swell_wave_period: [null, null, null],
     sea_surface_temperature: [null, null, null],
   },

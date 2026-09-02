@@ -33,8 +33,6 @@ function seaCell(
     hourly: {
       time,
       wave_height: column,
-      wave_period: column,
-      swell_wave_height: column,
       swell_wave_period: column,
       sea_surface_temperature: time.map(() => seaSurfaceTemperature),
     },

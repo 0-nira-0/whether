@@ -59,7 +59,6 @@ export type Factor = {
   value: number;
   unit: string;
   decimals: number | null;
-  score: number;
   band: Band;
   contribution: number;
   ideal: IdealRange | null;

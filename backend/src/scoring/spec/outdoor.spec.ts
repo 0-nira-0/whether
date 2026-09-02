@@ -114,14 +114,11 @@ describe('scoring a day for outdoor sightseeing', () => {
     expect(factors.every((factor) => factor.effect === null)).toBe(true);
   });
 
-  it('scores each factor on its own 0 to 100 with a band, so a scale can be drawn per row', () => {
+  it('bands every factor on its own, so a row can be coloured by how that one factor is doing', () => {
     const wet = scoreOutdoorDay(day({ precipitationMm: 12 }));
-    const rain = wet.factors.find((factor) => factor.name === 'Precipitation');
-    const temperature = wet.factors.find((factor) => factor.name === 'Temperature');
-    expect(rain?.score).toBeLessThan(50);
-    expect(rain?.band).toBe(rain !== undefined && rain.score < 25 ? 'Poor' : 'Mediocre');
-    expect(temperature?.score).toBe(100);
-    expect(temperature?.band).toBe('Excellent');
+    const bandOf = (name: string) => wet.factors.find((factor) => factor.name === name)?.band;
+    expect(bandOf('Precipitation')).toBe('Poor');
+    expect(bandOf('Temperature')).toBe('Excellent');
   });
 
   it('hands the measured value over untouched, in the unit it was measured in', () => {

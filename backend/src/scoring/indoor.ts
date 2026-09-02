@@ -47,7 +47,6 @@ function rateComponent(
       value,
       unit: component.unit,
       decimals: component.decimals ?? null,
-      score,
       band: bandFor(score),
       contribution,
       ideal: bestForIndoors(component, effect),

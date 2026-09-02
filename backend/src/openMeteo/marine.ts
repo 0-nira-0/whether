@@ -8,8 +8,6 @@ const FORECAST_DAYS = 7;
 
 const hourly = timeSeries({
   wave_height: nullableNumbers,
-  wave_period: nullableNumbers,
-  swell_wave_height: nullableNumbers,
   swell_wave_period: nullableNumbers,
   sea_surface_temperature: nullableNumbers,
 });

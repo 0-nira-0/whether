@@ -39,7 +39,6 @@ function rateFactor<Key extends string>(
       value,
       unit: definition.unit,
       decimals: definition.decimals ?? null,
-      score: Math.round(score),
       band: bandFor(score),
       contribution: Math.round(points),
       ideal: idealOf(definition),
