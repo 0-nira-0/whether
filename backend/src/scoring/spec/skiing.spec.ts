@@ -67,7 +67,7 @@ describe('the ring of points the snow gate looks at', () => {
   it('quotes the same radius in the unavailable message that it uses to place the points', () => {
     const points = snowRingAround(chamonixTown);
     expect(points).toHaveLength(6);
-    expect(NO_SNOW_NEARBY).toContain('~5 km');
+    expect(NO_SNOW_NEARBY).toEqual({ kind: 'NO_SNOW_NEARBY', withinKm: 5 });
     for (const point of points) {
       expect(distanceKm(chamonixTown, point)).toBeCloseTo(5, 1);
     }
@@ -90,10 +90,13 @@ describe('choosing where to score skiing', () => {
     expect(result.status).toBe('SCORED');
     if (result.status !== 'SCORED') return;
     expect(result.days).toHaveLength(2);
-    expect(result.context.join(' ')).not.toContain('hills');
-    expect(result.context[0]).toBe(
-      'Freezing level ranges 1,500 to 1,500 m this week; the town sits at 1,034 m',
-    );
+    expect(result.context.map((line) => line.kind)).not.toContain('HILLS');
+    expect(result.context[0]).toEqual({
+      kind: 'FREEZING_LEVEL',
+      lowestM: 1500,
+      highestM: 1500,
+      townElevationM: 1034,
+    });
   });
 
   it('otherwise scores the snowiest ring cell once for the whole week, naming radius and height only', () => {
@@ -105,22 +108,15 @@ describe('choosing where to score skiing', () => {
     const result = scoreSkiing(bare(chamonixTown), ring);
     expect(result.status).toBe('SCORED');
     if (result.status !== 'SCORED') return;
-    expect(result.context[0]).toBe(
-      'Scored on snow conditions in the hills around town (within ~5 km, up to 2,600 m). Town itself: 1,034 m, no snow this week',
-    );
-    expect(result.context.join(' ')).not.toMatch(/north|south|east|west|\d+\.\d+/);
+    expect(result.context[0]).toEqual({
+      kind: 'HILLS',
+      radiusKm: 5,
+      hillsElevationM: 2600,
+      townElevationM: 1034,
+    });
     expect(
       result.days[0]?.factors.find((factor) => factor.name === 'Snow depth')?.value,
     ).toBeCloseTo(90);
-  });
-
-  it('writes every height with a thousands separator and one unit at the end', () => {
-    const ring = [snowy(ringPoint(2641), 0.9)];
-    const result = scoreSkiing(bare({ ...chamonixTown, elevation: 1041 }), ring);
-    if (result.status !== 'SCORED') throw new Error('expected a score');
-    expect(result.context[0]).toBe(
-      'Scored on snow conditions in the hills around town (within ~5 km, up to 2,641 m). Town itself: 1,041 m, no snow this week',
-    );
   });
 
   it('will not pick a cell whose forecast has no usable daytime hours, even when it has snow', () => {
@@ -151,7 +147,7 @@ describe('choosing where to score skiing', () => {
     const ring = [snowy(ringPoint(1800), 0.5), snowy(ringPoint(2400), 0.5)];
     const result = scoreSkiing(bare(chamonixTown), ring);
     if (result.status !== 'SCORED') throw new Error('expected a score');
-    expect(result.context[0]).toContain('up to 2,400 m');
+    expect(result.context[0]).toMatchObject({ kind: 'HILLS', hillsElevationM: 2400 });
   });
 });
 
@@ -181,7 +177,11 @@ describe('scoring a skiing day', () => {
   it('caps a gale at 20, the lift-hold ceiling, and says so', () => {
     const gale = scoreSkiingDay(day({ gustsKmh: 70 }));
     expect(gale.score).toBeLessThanOrEqual(20);
-    expect(gale.cap?.sentence).toBe('Wind gusts 70 km/h, score capped at 20');
+    expect(gale.cap).toEqual({
+      rule: 'WIND_GUSTS',
+      ceiling: 20,
+      measured: { value: 70, unit: 'km/h', decimals: null },
+    });
   });
 
   it('stays within 0–100 across a grid', () => {
@@ -200,11 +200,10 @@ describe('scoring a skiing day', () => {
     }
   });
 
-  it('explains snow depth against an open-ended ideal', () => {
-    const sentences = scoreSkiingDay(day({ snowDepthCm: 12 })).factors.map(
-      (factor) => factor.sentence,
-    );
-    expect(sentences).toContain('Snow depth 12 cm, below the ideal range (from 30 cm)');
-    expect(sentences).toContain('Temperature −3 °C, inside the ideal range (−7 to 0 °C)');
+  it('marks snow depth as open-ended above, and temperature as a closed band', () => {
+    const factors = scoreSkiingDay(day({ snowDepthCm: 12 })).factors;
+    const idealOf = (name: string) => factors.find((factor) => factor.name === name)?.ideal;
+    expect(idealOf('Snow depth')).toMatchObject({ from: 30, openBelow: false, openAbove: true });
+    expect(idealOf('Temperature')).toEqual({ from: -7, to: 0, openBelow: false, openAbove: false });
   });
 });

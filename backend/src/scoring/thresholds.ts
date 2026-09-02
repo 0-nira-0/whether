@@ -328,8 +328,9 @@ export const INDOOR: Labelled<{
         { at: 50, score: 0 },
         { at: 90, score: 45 },
       ],
-      provenance: 'Assumed',
-      source: 'gusts over 50 km/h start to make the walk unpleasant; 90 km/h is a severe gale',
+      provenance: 'Sourced',
+      source:
+        'Beaufort force 7 starts at 50 km/h, described on land as inconvenience felt when walking against the wind; force 10 near 90 km/h is a storm',
     },
     {
       name: 'Thunderstorm',

@@ -1,4 +1,4 @@
-import type { Breakpoint } from './types.js';
+import type { Best, Breakpoint } from './types.js';
 
 export function evaluateCurve(curve: Breakpoint[], value: number): number {
   const first = curve[0];
@@ -23,12 +23,16 @@ export function evaluateCurve(curve: Breakpoint[], value: number): number {
   return last.score;
 }
 
-export function idealRange(curve: Breakpoint[]): { from: number; to: number } | null {
-  const top = curve.filter((point) => point.score === 100).map((point) => point.at);
-  if (top.length === 0) {
+export function idealRange(curve: Breakpoint[], best: Best): { from: number; to: number } | null {
+  const scores = curve.map((point) => point.score);
+  const bestScore = best === 'HIGHEST' ? Math.max(...scores) : Math.min(...scores);
+  const at = curve.flatMap((point, index) => (point.score === bestScore ? [index] : []));
+  const first = at[0];
+  const last = at[at.length - 1];
+  if (first === undefined || last === undefined || last - first !== at.length - 1) {
     return null;
   }
-  return { from: Math.min(...top), to: Math.max(...top) };
+  return { from: curve[first]?.at ?? 0, to: curve[last]?.at ?? 0 };
 }
 
 export function clamp(value: number, low: number, high: number): number {

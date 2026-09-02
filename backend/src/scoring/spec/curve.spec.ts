@@ -26,15 +26,26 @@ describe('a factor curve', () => {
   });
 
   it('reads the ideal band as the stretch that scores 100', () => {
-    expect(idealRange(temperatureTrapezoid)).toEqual({ from: 18, to: 26 });
+    expect(idealRange(temperatureTrapezoid, 'HIGHEST')).toEqual({ from: 18, to: 26 });
   });
 
-  it('has no ideal band when nothing scores 100, as for the indoor relief ramps', () => {
-    expect(
-      idealRange([
-        { at: 0, score: 0 },
-        { at: 8, score: 30 },
-      ]),
-    ).toBeNull();
+  it('reads the best of the curve rather than a fixed 100, so an indoor ramp has a band too', () => {
+    const reliefRamp = [
+      { at: 0, score: 0 },
+      { at: 8, score: 30 },
+    ];
+    expect(idealRange(reliefRamp, 'HIGHEST')).toEqual({ from: 8, to: 8 });
+    expect(idealRange(reliefRamp, 'LOWEST')).toEqual({ from: 0, to: 0 });
+  });
+
+  it('has no band when the best of the curve sits at both ends, as indoor temperature does', () => {
+    const bothExtremes = [
+      { at: -10, score: 30 },
+      { at: 5, score: 0 },
+      { at: 28, score: 0 },
+      { at: 36, score: 30 },
+    ];
+    expect(idealRange(bothExtremes, 'HIGHEST')).toBeNull();
+    expect(idealRange(bothExtremes, 'LOWEST')).toEqual({ from: 5, to: 28 });
   });
 });

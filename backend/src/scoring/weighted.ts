@@ -1,7 +1,6 @@
 import { bandFor } from './bands.js';
 import { evaluateCurve, idealRange } from './curve.js';
-import { formatMeasurement, formatNumber } from './format.js';
-import type { Cap, Factor, FactorDefinition } from './types.js';
+import type { Cap, Factor, FactorDefinition, IdealRange } from './types.js';
 
 type RatedFactor = { factor: Factor; points: number; cost: number; weight: number };
 
@@ -39,37 +38,24 @@ function rateFactor<Key extends string>(
       name: definition.name,
       value,
       unit: definition.unit,
+      decimals: definition.decimals ?? null,
       score: Math.round(score),
       band: bandFor(score),
-      curve: definition.curve,
       contribution: Math.round(points),
-      sentence: describeAgainstIdeal(definition, value),
+      ideal: idealOf(definition),
+      effect: null,
     },
   };
 }
 
-function describeAgainstIdeal<Key extends string>(
-  definition: FactorDefinition<Key>,
-  value: number,
-): string {
-  const { unit, decimals } = definition;
-  const measured = `${definition.name} ${formatMeasurement(value, unit, decimals)}`;
-  const ideal = idealRange(definition.curve);
+function idealOf<Key extends string>(definition: FactorDefinition<Key>): IdealRange | null {
+  const ideal = idealRange(definition.curve, 'HIGHEST');
   if (ideal === null) {
-    return measured;
+    return null;
   }
-  const openBelow = ideal.from === definition.curve[0]?.at;
-  const openAbove = ideal.to === definition.curve[definition.curve.length - 1]?.at;
-  const range = openBelow
-    ? `up to ${formatMeasurement(ideal.to, unit, decimals)}`
-    : openAbove
-      ? `from ${formatMeasurement(ideal.from, unit, decimals)}`
-      : `${formatNumber(ideal.from, decimals)} to ${formatMeasurement(ideal.to, unit, decimals)}`;
-  if (value < ideal.from) {
-    return `${measured}, below the ideal range (${range})`;
-  }
-  if (value > ideal.to) {
-    return `${measured}, above the ideal range (${range})`;
-  }
-  return `${measured}, inside the ideal range (${range})`;
+  return {
+    ...ideal,
+    openBelow: ideal.from === definition.curve[0]?.at,
+    openAbove: ideal.to === definition.curve[definition.curve.length - 1]?.at,
+  };
 }

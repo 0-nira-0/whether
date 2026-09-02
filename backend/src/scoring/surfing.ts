@@ -4,14 +4,19 @@ import type { MarineCell } from '../openMeteo/marine.js';
 import { bandFor } from './bands.js';
 import { chopCap, flatSeaCap, present, thunderstormCap } from './caps.js';
 import { hoursInWindow, mean, measureDays, pick } from './daytime.js';
-import { formatNumber } from './format.js';
 import { ACTIVE_HOURS, SURFING_FACTORS } from './thresholds.js';
-import type { ActivityScore, DayScore, SeaMeasurements } from './types.js';
+import type {
+  ActivityScore,
+  ContextLine,
+  DayScore,
+  SeaMeasurements,
+  UnavailableReason,
+} from './types.js';
 import { applyCaps, weightedSum } from './weighted.js';
 
-export const NO_COASTAL_WATER = 'No coastal water data for this location';
+export const NO_COASTAL_WATER: UnavailableReason = { kind: 'NO_COASTAL_WATER' };
 
-export function marineGate(cell: MarineCell): string | null {
+export function marineGate(cell: MarineCell): UnavailableReason | null {
   const firstDay = cell.daily.wave_height_max[0];
   return firstDay === null || firstDay === undefined ? NO_COASTAL_WATER : null;
 }
@@ -29,14 +34,12 @@ export function scoreSurfing(
   if (sea.length === 0) {
     return { status: 'UNAVAILABLE', reason: NO_COASTAL_WATER };
   }
-  const context = [
-    `Scored at the nearest water, about ${formatNumber(distanceKm(town, cell), 0)} km from town`,
-    'Wind is scored by strength only, its direction relative to the coast is not known here',
+  const context: ContextLine[] = [
+    { kind: 'NEAREST_WATER', distanceKm: distanceKm(town, cell) },
+    { kind: 'WIND_STRENGTH_ONLY' },
   ];
   if (sea.every((day) => day.seaSurfaceTempC === null)) {
-    context.push(
-      'Water temperature is not available for this water, scored on waves and wind only',
-    );
+    context.push({ kind: 'NO_WATER_TEMPERATURE' });
   }
   return { status: 'SCORED', days: sea.map(scoreSurfingDay), context };
 }

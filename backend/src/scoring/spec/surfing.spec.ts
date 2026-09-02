@@ -112,8 +112,12 @@ describe('scoring a surfing week', () => {
     expect(result.status).toBe('SCORED');
     if (result.status !== 'SCORED') return;
     expect(result.days).toHaveLength(2);
-    expect(result.context[0]).toBe('Scored at the nearest water, about 7 km from town');
-    expect(result.context.join(' ')).not.toMatch(/north|south|east|west|\d+\.\d+/);
+    const nearest = result.context[0];
+    expect(nearest?.kind).toBe('NEAREST_WATER');
+    if (nearest?.kind === 'NEAREST_WATER') {
+      expect(nearest.distanceKm).toBeCloseTo(6.6, 1);
+    }
+    expect(result.context).toContainEqual({ kind: 'WIND_STRENGTH_ONLY' });
   });
 
   it('scores a lake that has waves but no water temperature on the remaining factors, and says so', () => {
@@ -129,9 +133,7 @@ describe('scoring a surfing week', () => {
     expect(result.days).toHaveLength(2);
     expect(result.days[0]?.factors.map((factor) => factor.name)).not.toContain('Sea temperature');
     expect(result.days[0]?.score).toBeGreaterThanOrEqual(0);
-    expect(result.context).toContain(
-      'Water temperature is not available for this water, scored on waves and wind only',
-    );
+    expect(result.context).toContainEqual({ kind: 'NO_WATER_TEMPERATURE' });
   });
 
   it('never answers SCORED with an empty week: a cell whose hours are all null is unavailable', () => {
@@ -170,13 +172,17 @@ describe('scoring a surfing day', () => {
       }),
     );
     expect(chicago.score).toBeLessThanOrEqual(15);
-    expect(chicago.cap?.rule).toBe('Wind chop');
+    expect(chicago.cap?.rule).toBe('WIND_CHOP');
   });
 
   it('caps a flat day at 10 and says the sea is flat', () => {
     const flat = scoreSurfingDay(sea({ waveHeightM: 0.1, waveHeightMaxM: 0.2, swellPeriodS: 8 }));
     expect(flat.score).toBeLessThanOrEqual(10);
-    expect(flat.cap?.sentence).toBe('Waves top out at 0.2 m, flat, score capped at 10');
+    expect(flat.cap).toEqual({
+      rule: 'FLAT_SEA',
+      ceiling: 10,
+      measured: { value: 0.2, unit: 'm', decimals: 1 },
+    });
   });
 
   it('caps the Baltic on its measured numbers too, 4.6 s is still chop, but never below the lake', () => {
@@ -198,7 +204,7 @@ describe('scoring a surfing day', () => {
         windKmh: 6,
       }),
     );
-    expect(gdansk.cap?.rule).toBe('Wind chop');
+    expect(gdansk.cap?.rule).toBe('WIND_CHOP');
     expect(gdansk.score).toBeGreaterThanOrEqual(chicago.score);
   });
 
@@ -247,11 +253,13 @@ describe('scoring a surfing day', () => {
     }
   });
 
-  it('writes wave height with one decimal and the period band with an open end', () => {
-    const sentences = scoreSurfingDay(sea({ waveHeightM: 1.35, swellPeriodS: 7 })).factors.map(
-      (f) => f.sentence,
-    );
-    expect(sentences).toContain('Wave height 1.4 m, inside the ideal range (0.8 to 2.0 m)');
-    expect(sentences).toContain('Swell period 7 s, below the ideal range (from 10 s)');
+  it('asks for one decimal on wave height and marks the period band as open above', () => {
+    const factors = scoreSurfingDay(sea({ waveHeightM: 1.35, swellPeriodS: 7 })).factors;
+    const named = (name: string) => factors.find((factor) => factor.name === name);
+    expect(named('Wave height')).toMatchObject({
+      decimals: 1,
+      ideal: { from: 0.8, to: 2, openBelow: false, openAbove: false },
+    });
+    expect(named('Swell period')).toMatchObject({ ideal: { from: 10, openAbove: true } });
   });
 });

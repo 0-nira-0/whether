@@ -24,10 +24,25 @@ const typeDefs = /* GraphQL */ `
   type ActivityForecast {
     activity: Activity!
     status: Status!
-    unavailableReason: String
+    unavailable: Unavailable
     days: [Day!]!
     bestDay: String
-    context: [String!]!
+    context: [ContextLine!]!
+  }
+
+  type Unavailable {
+    reason: UnavailableReason!
+    withinKm: Float
+  }
+
+  type ContextLine {
+    kind: ContextKind!
+    radiusKm: Float
+    hillsElevationM: Float
+    townElevationM: Float
+    lowestM: Float
+    highestM: Float
+    distanceKm: Float
   }
 
   type Day {
@@ -42,21 +57,26 @@ const typeDefs = /* GraphQL */ `
     name: String!
     value: Float!
     unit: String!
+    decimals: Int
     band: Band!
     contribution: Int!
-    sentence: String!
-    curve: [CurvePoint!]!
+    ideal: IdealRange
+    effect: Effect
   }
 
-  type CurvePoint {
-    at: Float!
-    score: Float!
+  type IdealRange {
+    from: Float!
+    to: Float!
+    openBelow: Boolean!
+    openAbove: Boolean!
   }
 
   type Cap {
-    rule: String!
+    rule: CapRule!
     ceiling: Int!
-    sentence: String!
+    value: Float
+    unit: String
+    decimals: Int
   }
 
   enum Activity {
@@ -69,6 +89,31 @@ const typeDefs = /* GraphQL */ `
   enum Status {
     SCORED
     UNAVAILABLE
+  }
+
+  enum UnavailableReason {
+    NO_SNOW_NEARBY
+    NO_COASTAL_WATER
+  }
+
+  enum ContextKind {
+    HILLS
+    FREEZING_LEVEL
+    NEAREST_WATER
+    WIND_STRENGTH_ONLY
+    NO_WATER_TEMPERATURE
+  }
+
+  enum CapRule {
+    THUNDERSTORM
+    WIND_GUSTS
+    FLAT_SEA
+    WIND_CHOP
+  }
+
+  enum Effect {
+    RELIEF
+    FRICTION
   }
 
   enum Band {
@@ -91,6 +136,10 @@ export function buildSchema(): GraphQLSchema {
       },
       Day: {
         band: (day: DayScore) => day.band.toUpperCase(),
+        cap: (day: DayScore) =>
+          day.cap === null
+            ? null
+            : { rule: day.cap.rule, ceiling: day.cap.ceiling, ...day.cap.measured },
       },
       Factor: {
         band: (factor: Factor) => factor.band.toUpperCase(),
@@ -112,10 +161,11 @@ async function surfacing<Result>(work: Promise<Result>): Promise<Result> {
 
 export function asActivityForecast(forecast: ActivityForecast) {
   if (forecast.status === 'UNAVAILABLE') {
+    const { kind, ...numbers } = forecast.reason;
     return {
       activity: forecast.activity,
       status: forecast.status,
-      unavailableReason: forecast.reason,
+      unavailable: { reason: kind, ...numbers },
       days: [],
       bestDay: null,
       context: [],
@@ -124,7 +174,7 @@ export function asActivityForecast(forecast: ActivityForecast) {
   return {
     activity: forecast.activity,
     status: forecast.status,
-    unavailableReason: null,
+    unavailable: null,
     days: forecast.days,
     bestDay: bestDayOf(forecast.days),
     context: forecast.context,

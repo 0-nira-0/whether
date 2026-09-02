@@ -29,14 +29,14 @@ describe('flattening an activity into the shape the schema exposes', () => {
       activity: 'SURFING',
       status: 'SCORED',
       days: [day('2026-09-02', 40), day('2026-09-03', 88)],
-      context: ['Scored at the nearest water, about 7 km from town'],
+      context: [{ kind: 'NEAREST_WATER', distanceKm: 7 }],
     };
     expect(asActivityForecast(scored)).toMatchObject({
       activity: 'SURFING',
       status: 'SCORED',
-      unavailableReason: null,
+      unavailable: null,
       bestDay: '2026-09-03',
-      context: ['Scored at the nearest water, about 7 km from town'],
+      context: [{ kind: 'NEAREST_WATER', distanceKm: 7 }],
     });
   });
 
@@ -44,12 +44,12 @@ describe('flattening an activity into the shape the schema exposes', () => {
     const unavailable: ActivityForecast = {
       activity: 'SKIING',
       status: 'UNAVAILABLE',
-      reason: 'No snow within ~5 km of this location in the next 7 days',
+      reason: { kind: 'NO_SNOW_NEARBY', withinKm: 5 },
     };
     expect(asActivityForecast(unavailable)).toEqual({
       activity: 'SKIING',
       status: 'UNAVAILABLE',
-      unavailableReason: 'No snow within ~5 km of this location in the next 7 days',
+      unavailable: { reason: 'NO_SNOW_NEARBY', withinKm: 5 },
       days: [],
       bestDay: null,
       context: [],

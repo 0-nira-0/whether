@@ -48,18 +48,39 @@ export type FactorDefinition<Key extends string> = {
 
 export type IndoorComponent = Omit<FactorDefinition<Measure>, 'weight'>;
 
+export type Best = 'HIGHEST' | 'LOWEST';
+
+export type IdealRange = { from: number; to: number; openBelow: boolean; openAbove: boolean };
+
+export type Effect = 'RELIEF' | 'FRICTION';
+
 export type Factor = {
   name: string;
   value: number;
   unit: string;
+  decimals: number | null;
   score: number;
   band: Band;
-  curve: Breakpoint[];
   contribution: number;
-  sentence: string;
+  ideal: IdealRange | null;
+  effect: Effect | null;
 };
 
-export type Cap = { rule: string; ceiling: number; sentence: string };
+export type CapRule = 'THUNDERSTORM' | 'WIND_GUSTS' | 'FLAT_SEA' | 'WIND_CHOP';
+
+type Measurement = { value: number; unit: string; decimals: number | null };
+
+export type Cap = { rule: CapRule; ceiling: number; measured: Measurement | null };
+
+export type ContextLine =
+  | { kind: 'HILLS'; radiusKm: number; hillsElevationM: number; townElevationM: number }
+  | { kind: 'FREEZING_LEVEL'; lowestM: number; highestM: number; townElevationM: number }
+  | { kind: 'NEAREST_WATER'; distanceKm: number }
+  | { kind: 'WIND_STRENGTH_ONLY' }
+  | { kind: 'NO_WATER_TEMPERATURE' };
+
+export type UnavailableReason =
+  { kind: 'NO_SNOW_NEARBY'; withinKm: number } | { kind: 'NO_COASTAL_WATER' };
 
 export type Band = 'Poor' | 'Mediocre' | 'Decent' | 'Good' | 'Excellent';
 
@@ -72,5 +93,5 @@ export type DayScore = {
 };
 
 export type ActivityScore =
-  | { status: 'SCORED'; days: DayScore[]; context: string[] }
-  | { status: 'UNAVAILABLE'; reason: string };
+  | { status: 'SCORED'; days: DayScore[]; context: ContextLine[] }
+  | { status: 'UNAVAILABLE'; reason: UnavailableReason };

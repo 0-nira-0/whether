@@ -63,19 +63,22 @@ describe('scoring a day for outdoor sightseeing', () => {
   it('caps an otherwise perfect day at 15 when a thunderstorm hour lands in the window, and says so', () => {
     const stormy = scoreOutdoorDay(day({ thunderstormHours: 1 }));
     expect(stormy.score).toBeLessThanOrEqual(15);
-    expect(stormy.cap).toMatchObject({ rule: 'Thunderstorm', ceiling: 15 });
-    expect(stormy.cap?.sentence).toBe('Thunderstorm during the day, score capped at 15');
+    expect(stormy.cap).toEqual({ rule: 'THUNDERSTORM', ceiling: 15, measured: null });
   });
 
   it('caps at 30 when gusts pass 65 km/h, naming the measured gust', () => {
     const gale = scoreOutdoorDay(day({ gustsKmh: 72 }));
     expect(gale.score).toBeLessThanOrEqual(30);
-    expect(gale.cap?.sentence).toBe('Wind gusts 72 km/h, score capped at 30');
+    expect(gale.cap).toEqual({
+      rule: 'WIND_GUSTS',
+      ceiling: 30,
+      measured: { value: 72, unit: 'km/h', decimals: null },
+    });
   });
 
   it('takes the lowest ceiling when two caps apply', () => {
     expect(scoreOutdoorDay(day({ gustsKmh: 72, thunderstormHours: 1 })).cap?.rule).toBe(
-      'Thunderstorm',
+      'THUNDERSTORM',
     );
   });
 
@@ -89,14 +92,26 @@ describe('scoring a day for outdoor sightseeing', () => {
     ]);
   });
 
-  it('explains each factor as its value set against the ideal range, one templated sentence each', () => {
-    const sentences = scoreOutdoorDay(
+  it('sets each factor against its ideal range, with open ends marked, so a sentence can be templated', () => {
+    const factors = scoreOutdoorDay(
       day({ precipitationMm: 7, windKmh: 38, temperatureC: 22, cloudCoverPct: 5 }),
-    ).factors.map((factor) => factor.sentence);
-    expect(sentences).toContain('Precipitation 7 mm, above the ideal range (up to 3 mm)');
-    expect(sentences).toContain('Wind 38 km/h, above the ideal range (up to 10 km/h)');
-    expect(sentences).toContain('Temperature 22 °C, inside the ideal range (18 to 26 °C)');
-    expect(sentences).toContain('Cloud cover 5 %, below the ideal range (10 to 30 %)');
+    ).factors;
+    const idealOf = (name: string) => factors.find((factor) => factor.name === name)?.ideal;
+    expect(idealOf('Precipitation')).toEqual({ from: 0, to: 3, openBelow: true, openAbove: false });
+    expect(idealOf('Wind')).toEqual({ from: 0, to: 10, openBelow: true, openAbove: false });
+    expect(idealOf('Temperature')).toEqual({
+      from: 18,
+      to: 26,
+      openBelow: false,
+      openAbove: false,
+    });
+    expect(idealOf('Cloud cover')).toEqual({
+      from: 10,
+      to: 30,
+      openBelow: false,
+      openAbove: false,
+    });
+    expect(factors.every((factor) => factor.effect === null)).toBe(true);
   });
 
   it('scores each factor on its own 0 to 100 with a band, so a scale can be drawn per row', () => {
@@ -109,18 +124,9 @@ describe('scoring a day for outdoor sightseeing', () => {
     expect(temperature?.band).toBe('Excellent');
   });
 
-  it('writes values to one decimal as measured, whole numbers without a trailing zero', () => {
-    const sentences = scoreOutdoorDay(day({ temperatureC: 8.3, windKmh: 12 })).factors.map(
-      (factor) => factor.sentence,
-    );
-    expect(sentences).toContain('Temperature 8.3 °C, below the ideal range (18 to 26 °C)');
-    expect(sentences).toContain('Wind 12 km/h, above the ideal range (up to 10 km/h)');
-  });
-
-  it('writes negative temperatures with a real minus sign', () => {
-    const frosty = scoreOutdoorDay(day({ temperatureC: -3 }));
-    expect(frosty.factors.find((factor) => factor.name === 'Temperature')?.sentence).toBe(
-      'Temperature −3 °C, below the ideal range (18 to 26 °C)',
-    );
+  it('hands the measured value over untouched, in the unit it was measured in', () => {
+    const cool = scoreOutdoorDay(day({ temperatureC: 8.3 }));
+    const temperature = cool.factors.find((factor) => factor.name === 'Temperature');
+    expect(temperature).toMatchObject({ value: 8.3, unit: '°C', decimals: null });
   });
 });

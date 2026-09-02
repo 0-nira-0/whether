@@ -63,11 +63,25 @@ describe('scoring a day for indoor sightseeing', () => {
     }
   });
 
-  it('explains relief and friction as signed contributions in plain words', () => {
-    const sentences = scoreIndoorDay(blizzard).factors.map((factor) => factor.sentence);
-    expect(sentences).toContain('Precipitation 10 mm, makes indoors more appealing (+30)');
-    expect(sentences).toContain('Wind gusts 80 km/h, makes getting there harder (−34)');
-    expect(sentences).toContain('Thunderstorm 0 h, no trouble getting there');
+  it('marks each component as relief or friction with a signed contribution', () => {
+    const factors = scoreIndoorDay(blizzard).factors;
+    const named = (name: string) => factors.find((factor) => factor.name === name);
+    expect(named('Precipitation')).toMatchObject({ effect: 'RELIEF', contribution: 30 });
+    expect(named('Wind gusts')).toMatchObject({ effect: 'FRICTION', contribution: -34 });
+    expect(named('Thunderstorm')).toMatchObject({ effect: 'FRICTION', contribution: 0 });
+  });
+
+  it('gives every component the same band a scored factor gets: where it favours indoors most', () => {
+    const factors = scoreIndoorDay(blizzard).factors;
+    const idealOf = (name: string) => factors.find((factor) => factor.name === name)?.ideal;
+    expect(idealOf('Precipitation')).toEqual({
+      from: 8,
+      to: 8,
+      openBelow: false,
+      openAbove: true,
+    });
+    expect(idealOf('Wind gusts')).toEqual({ from: 50, to: 50, openBelow: true, openAbove: false });
+    expect(idealOf('Temperature')).toBeNull();
   });
 
   it('scores each factor by how much it favours indoors: rain at full relief is 100, a gale is poor', () => {
