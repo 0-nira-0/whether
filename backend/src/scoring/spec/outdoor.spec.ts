@@ -64,13 +64,13 @@ describe('scoring a day for outdoor sightseeing', () => {
     const stormy = scoreOutdoorDay(day({ thunderstormHours: 1 }));
     expect(stormy.score).toBeLessThanOrEqual(15);
     expect(stormy.cap).toMatchObject({ rule: 'Thunderstorm', ceiling: 15 });
-    expect(stormy.cap?.sentence).toBe('Thunderstorm during the day — score capped at 15');
+    expect(stormy.cap?.sentence).toBe('Thunderstorm during the day, score capped at 15');
   });
 
   it('caps at 30 when gusts pass 65 km/h, naming the measured gust', () => {
     const gale = scoreOutdoorDay(day({ gustsKmh: 72 }));
     expect(gale.score).toBeLessThanOrEqual(30);
-    expect(gale.cap?.sentence).toBe('Wind gusts 72 km/h — score capped at 30');
+    expect(gale.cap?.sentence).toBe('Wind gusts 72 km/h, score capped at 30');
   });
 
   it('takes the lowest ceiling when two caps apply', () => {
@@ -93,16 +93,34 @@ describe('scoring a day for outdoor sightseeing', () => {
     const sentences = scoreOutdoorDay(
       day({ precipitationMm: 7, windKmh: 38, temperatureC: 22, cloudCoverPct: 5 }),
     ).factors.map((factor) => factor.sentence);
-    expect(sentences).toContain('Precipitation 7 mm — above the ideal range (up to 3 mm)');
-    expect(sentences).toContain('Wind 38 km/h — above the ideal range (up to 10 km/h)');
-    expect(sentences).toContain('Temperature 22 °C — inside the ideal range (18 to 26 °C)');
-    expect(sentences).toContain('Cloud cover 5 % — below the ideal range (10 to 30 %)');
+    expect(sentences).toContain('Precipitation 7 mm, above the ideal range (up to 3 mm)');
+    expect(sentences).toContain('Wind 38 km/h, above the ideal range (up to 10 km/h)');
+    expect(sentences).toContain('Temperature 22 °C, inside the ideal range (18 to 26 °C)');
+    expect(sentences).toContain('Cloud cover 5 %, below the ideal range (10 to 30 %)');
+  });
+
+  it('scores each factor on its own 0 to 100 with a band, so a scale can be drawn per row', () => {
+    const wet = scoreOutdoorDay(day({ precipitationMm: 12 }));
+    const rain = wet.factors.find((factor) => factor.name === 'Precipitation');
+    const temperature = wet.factors.find((factor) => factor.name === 'Temperature');
+    expect(rain?.score).toBeLessThan(50);
+    expect(rain?.band).toBe(rain !== undefined && rain.score < 25 ? 'Poor' : 'Mediocre');
+    expect(temperature?.score).toBe(100);
+    expect(temperature?.band).toBe('Excellent');
+  });
+
+  it('writes values to one decimal as measured, whole numbers without a trailing zero', () => {
+    const sentences = scoreOutdoorDay(day({ temperatureC: 8.3, windKmh: 12 })).factors.map(
+      (factor) => factor.sentence,
+    );
+    expect(sentences).toContain('Temperature 8.3 °C, below the ideal range (18 to 26 °C)');
+    expect(sentences).toContain('Wind 12 km/h, above the ideal range (up to 10 km/h)');
   });
 
   it('writes negative temperatures with a real minus sign', () => {
     const frosty = scoreOutdoorDay(day({ temperatureC: -3 }));
     expect(frosty.factors.find((factor) => factor.name === 'Temperature')?.sentence).toBe(
-      'Temperature −3 °C — below the ideal range (18 to 26 °C)',
+      'Temperature −3 °C, below the ideal range (18 to 26 °C)',
     );
   });
 });

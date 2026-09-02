@@ -130,7 +130,7 @@ describe('scoring a surfing week', () => {
     expect(result.days[0]?.factors.map((factor) => factor.name)).not.toContain('Sea temperature');
     expect(result.days[0]?.score).toBeGreaterThanOrEqual(0);
     expect(result.context).toContain(
-      'Water temperature is not available for this water — scored on waves and wind only',
+      'Water temperature is not available for this water, scored on waves and wind only',
     );
   });
 
@@ -176,7 +176,7 @@ describe('scoring a surfing day', () => {
   it('caps a flat day at 10 and says the sea is flat', () => {
     const flat = scoreSurfingDay(sea({ waveHeightM: 0.1, waveHeightMaxM: 0.2, swellPeriodS: 8 }));
     expect(flat.score).toBeLessThanOrEqual(10);
-    expect(flat.cap?.sentence).toBe('Waves top out at 0.2 m — flat, score capped at 10');
+    expect(flat.cap?.sentence).toBe('Waves top out at 0.2 m, flat, score capped at 10');
   });
 
   it('caps the Baltic on its measured numbers too, 4.6 s is still chop, but never below the lake', () => {
@@ -251,7 +251,7 @@ describe('scoring a surfing day', () => {
     const sentences = scoreSurfingDay(sea({ waveHeightM: 1.35, swellPeriodS: 7 })).factors.map(
       (f) => f.sentence,
     );
-    expect(sentences).toContain('Wave height 1.4 m — inside the ideal range (0.8 to 2.0 m)');
-    expect(sentences).toContain('Swell period 7 s — below the ideal range (from 10 s)');
+    expect(sentences).toContain('Wave height 1.4 m, inside the ideal range (0.8 to 2.0 m)');
+    expect(sentences).toContain('Swell period 7 s, below the ideal range (from 10 s)');
   });
 });

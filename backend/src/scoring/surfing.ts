@@ -30,12 +30,12 @@ export function scoreSurfing(
     return { status: 'UNAVAILABLE', reason: NO_COASTAL_WATER };
   }
   const context = [
-    `Scored at the nearest water, about ${formatNumber(distanceKm(town, cell))} km from town`,
-    'Wind is scored by strength only — its direction relative to the coast is not known here',
+    `Scored at the nearest water, about ${formatNumber(distanceKm(town, cell), 0)} km from town`,
+    'Wind is scored by strength only, its direction relative to the coast is not known here',
   ];
   if (sea.every((day) => day.seaSurfaceTempC === null)) {
     context.push(
-      'Water temperature is not available for this water — scored on waves and wind only',
+      'Water temperature is not available for this water, scored on waves and wind only',
     );
   }
   return { status: 'SCORED', days: sea.map(scoreSurfingDay), context };

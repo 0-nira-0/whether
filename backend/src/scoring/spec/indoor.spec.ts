@@ -65,9 +65,20 @@ describe('scoring a day for indoor sightseeing', () => {
 
   it('explains relief and friction as signed contributions in plain words', () => {
     const sentences = scoreIndoorDay(blizzard).factors.map((factor) => factor.sentence);
-    expect(sentences).toContain('Precipitation 10 mm — makes indoors more appealing (+30)');
-    expect(sentences).toContain('Wind gusts 80 km/h — makes getting there harder (−34)');
-    expect(sentences).toContain('Thunderstorm 0 h — no trouble getting there');
+    expect(sentences).toContain('Precipitation 10 mm, makes indoors more appealing (+30)');
+    expect(sentences).toContain('Wind gusts 80 km/h, makes getting there harder (−34)');
+    expect(sentences).toContain('Thunderstorm 0 h, no trouble getting there');
+  });
+
+  it('scores each factor by how much it favours indoors: rain at full relief is 100, a gale is poor', () => {
+    const factorsOf = (measured: DayMeasurements) => scoreIndoorDay(measured).factors;
+    const rain = factorsOf(blizzard).find((factor) => factor.name === 'Precipitation');
+    const gusts = factorsOf(blizzard).find((factor) => factor.name === 'Wind gusts');
+    const calm = factorsOf(perfectOutside).find((factor) => factor.name === 'Wind gusts');
+    expect(rain?.score).toBe(100);
+    expect(rain?.band).toBe('Excellent');
+    expect(gusts?.score).toBeLessThan(50);
+    expect(calm?.score).toBe(100);
   });
 
   it('leads with the factor that moved the score most', () => {

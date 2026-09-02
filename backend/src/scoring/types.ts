@@ -52,6 +52,8 @@ export type Factor = {
   name: string;
   value: number;
   unit: string;
+  score: number;
+  band: Band;
   curve: Breakpoint[];
   contribution: number;
   sentence: string;

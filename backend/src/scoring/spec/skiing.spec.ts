@@ -181,7 +181,7 @@ describe('scoring a skiing day', () => {
   it('caps a gale at 20, the lift-hold ceiling, and says so', () => {
     const gale = scoreSkiingDay(day({ gustsKmh: 70 }));
     expect(gale.score).toBeLessThanOrEqual(20);
-    expect(gale.cap?.sentence).toBe('Wind gusts 70 km/h — score capped at 20');
+    expect(gale.cap?.sentence).toBe('Wind gusts 70 km/h, score capped at 20');
   });
 
   it('stays within 0–100 across a grid', () => {
@@ -204,7 +204,7 @@ describe('scoring a skiing day', () => {
     const sentences = scoreSkiingDay(day({ snowDepthCm: 12 })).factors.map(
       (factor) => factor.sentence,
     );
-    expect(sentences).toContain('Snow depth 12 cm — below the ideal range (from 30 cm)');
-    expect(sentences).toContain('Temperature −3 °C — inside the ideal range (−7 to 0 °C)');
+    expect(sentences).toContain('Snow depth 12 cm, below the ideal range (from 30 cm)');
+    expect(sentences).toContain('Temperature −3 °C, inside the ideal range (−7 to 0 °C)');
   });
 });

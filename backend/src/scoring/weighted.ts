@@ -1,3 +1,4 @@
+import { bandFor } from './bands.js';
 import { evaluateCurve, idealRange } from './curve.js';
 import { formatMeasurement, formatNumber } from './format.js';
 import type { Cap, Factor, FactorDefinition } from './types.js';
@@ -28,7 +29,8 @@ function rateFactor<Key extends string>(
   definition: FactorDefinition<Key>,
   value: number,
 ): RatedFactor {
-  const points = definition.weight * evaluateCurve(definition.curve, value);
+  const score = evaluateCurve(definition.curve, value);
+  const points = definition.weight * score;
   return {
     points,
     weight: definition.weight,
@@ -37,6 +39,8 @@ function rateFactor<Key extends string>(
       name: definition.name,
       value,
       unit: definition.unit,
+      score: Math.round(score),
+      band: bandFor(score),
       curve: definition.curve,
       contribution: Math.round(points),
       sentence: describeAgainstIdeal(definition, value),
@@ -62,10 +66,10 @@ function describeAgainstIdeal<Key extends string>(
       ? `from ${formatMeasurement(ideal.from, unit, decimals)}`
       : `${formatNumber(ideal.from, decimals)} to ${formatMeasurement(ideal.to, unit, decimals)}`;
   if (value < ideal.from) {
-    return `${measured} — below the ideal range (${range})`;
+    return `${measured}, below the ideal range (${range})`;
   }
   if (value > ideal.to) {
-    return `${measured} — above the ideal range (${range})`;
+    return `${measured}, above the ideal range (${range})`;
   }
-  return `${measured} — inside the ideal range (${range})`;
+  return `${measured}, inside the ideal range (${range})`;
 }

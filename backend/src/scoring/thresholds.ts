@@ -291,7 +291,7 @@ export const INDOOR: Labelled<{
   maxFriction: 45,
   provenance: 'Assumed',
   source:
-    'a museum is a fine plan on an ordinary day, so the base is well above the middle; the ranges are fixed by the blizzard test — gale plus heavy snow must land near 50, below a drizzle day',
+    'a museum is a fine plan on an ordinary day, so the base is well above the middle; the ranges are fixed by the blizzard test, gale plus heavy snow must land near 50, below a drizzle day',
   relief: [
     {
       name: 'Precipitation',

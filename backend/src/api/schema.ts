@@ -4,7 +4,7 @@ import type { GraphQLSchema } from 'graphql';
 import { searchPlaces } from '../openMeteo/geocoding.js';
 import { UpstreamError } from '../openMeteo/http.js';
 import { rateActivities, type ActivityForecast } from '../rating/rateActivities.js';
-import type { DayScore } from '../scoring/types.js';
+import type { DayScore, Factor } from '../scoring/types.js';
 
 const typeDefs = /* GraphQL */ `
   type Query {
@@ -42,6 +42,7 @@ const typeDefs = /* GraphQL */ `
     name: String!
     value: Float!
     unit: String!
+    band: Band!
     contribution: Int!
     sentence: String!
     curve: [CurvePoint!]!
@@ -90,6 +91,9 @@ export function buildSchema(): GraphQLSchema {
       },
       Day: {
         band: (day: DayScore) => day.band.toUpperCase(),
+      },
+      Factor: {
+        band: (factor: Factor) => factor.band.toUpperCase(),
       },
     },
   });
