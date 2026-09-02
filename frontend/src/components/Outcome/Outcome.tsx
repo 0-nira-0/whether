@@ -1,5 +1,7 @@
 import { ACTIVITY_LABELS, type Activity } from '../../activities';
 import type { SearchStatus } from '../../hooks/useSearch';
+import { useUnits } from '../../hooks/useUnits';
+import { unavailableSentence } from '../../sentences';
 import { ErrorState } from '../ErrorState/ErrorState';
 import { NotFoundState } from '../NotFoundState/NotFoundState';
 import { Result } from '../Result/Result';
@@ -11,6 +13,7 @@ import styles from './Outcome.module.css';
 type OutcomeProps = { status: SearchStatus; activity: Activity | null; onRetry: () => void };
 
 export function Outcome({ status, activity, onRetry }: OutcomeProps) {
+  const { units } = useUnits();
   switch (status.kind) {
     case 'failed':
       return <ErrorState message={status.message} onRetry={onRetry} />;
@@ -27,11 +30,11 @@ export function Outcome({ status, activity, onRetry }: OutcomeProps) {
       if (shown === undefined) {
         return <StartState />;
       }
-      if (shown.status === 'UNAVAILABLE') {
+      if (shown.unavailable !== null) {
         return (
           <UnavailableState
             activity={ACTIVITY_LABELS[shown.activity]}
-            reason={shown.unavailableReason ?? 'No data for this activity here'}
+            reason={unavailableSentence(shown.unavailable, units)}
           />
         );
       }

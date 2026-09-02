@@ -1,7 +1,7 @@
 .row {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 6px;
   padding: 16px 0;
   border-top: 1px solid var(--rule);
 }
@@ -19,36 +19,6 @@
 
 .value {
   font-size: 16px;
-}
-
-.bar {
-  position: relative;
-  display: flex;
-  height: 6px;
-  border-radius: 3px;
-}
-
-.zone {
-  flex: 1;
-}
-
-.bar > :first-child {
-  border-radius: 3px 0 0 3px;
-}
-
-.bar > .zone:last-of-type {
-  border-radius: 0 3px 3px 0;
-}
-
-.marker {
-  position: absolute;
-  top: 50%;
-  width: 12px;
-  height: 12px;
-  margin: -6px 0 0 -6px;
-  border-radius: 50%;
-  background: var(--brand);
-  border: 2px solid var(--card);
 }
 
 .sentence {

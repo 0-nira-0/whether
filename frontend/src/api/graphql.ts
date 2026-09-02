@@ -30,7 +30,11 @@ export async function request<Data>(
     throw new RequestFailed('The forecast service did not answer');
   }
   if (!response.ok) {
-    throw new RequestFailed(`The forecast service answered ${String(response.status)}`);
+    throw new RequestFailed(
+      response.status >= 500
+        ? 'The forecast service is not answering'
+        : `The forecast service refused the request, ${String(response.status)}`,
+    );
   }
   let body: unknown;
   try {

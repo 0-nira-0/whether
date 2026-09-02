@@ -37,7 +37,7 @@ export function ControlRow({
         <div className={styles.search}>
           <div className={styles.fieldWrap}>
             <input
-              className={suggestions === 'closed' ? styles.field : styles.fieldAttached}
+              className={suggestions.kind === 'closed' ? styles.field : styles.fieldAttached}
               value={query}
               onChange={(event) => {
                 onQueryChange(event.target.value);
@@ -46,7 +46,9 @@ export function ControlRow({
               aria-label="Place to score"
               autoComplete="off"
             />
-            {suggestions !== 'closed' && <CityList places={suggestions} onPick={onPlacePick} />}
+            {suggestions.kind !== 'closed' && (
+              <CityList suggestions={suggestions} onPick={onPlacePick} />
+            )}
           </div>
           <button className={styles.button} type="submit" disabled={busy || query.trim() === ''}>
             Search

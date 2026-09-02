@@ -14,7 +14,7 @@ const ROWS = [
   {
     question: 'Where does the weather come from?',
     answer:
-      'Open-Meteo, fetched live for every search and never stored. Surfing is scored at the nearest sea cell; skiing on the town if it has snow, otherwise on the snowiest point within about 5 km.',
+      'Open-Meteo, fetched live for every search and never stored. Surfing is scored at the nearest sea cell; skiing on the town if it has snow, otherwise on the snowiest point in the hills just around it. Both say where they were measured, in the units you chose.',
   },
   {
     question: 'Why is an activity unavailable?',

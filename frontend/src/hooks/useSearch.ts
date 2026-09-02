@@ -14,7 +14,11 @@ export type SearchStatus =
   | { kind: 'loaded'; place: Place; forecasts: ActivityForecast[] }
   | { kind: 'failed'; message: string };
 
-export type Suggestions = Place[] | null | 'closed';
+export type Suggestions =
+  | { kind: 'closed' }
+  | { kind: 'loading' }
+  | { kind: 'places'; places: Place[] }
+  | { kind: 'unreachable' };
 
 type Suggested = { wanted: string; places: Place[] | null };
 
@@ -54,10 +58,12 @@ export function useSearch() {
   }, [wanted, typing]);
 
   const suggestions: Suggestions = !typing
-    ? 'closed'
+    ? { kind: 'closed' }
     : suggested?.wanted !== wanted
-      ? null
-      : (suggested.places ?? 'closed');
+      ? { kind: 'loading' }
+      : suggested.places === null
+        ? { kind: 'unreachable' }
+        : { kind: 'places', places: suggested.places };
 
   function type(next: string) {
     setQuery(next);
@@ -85,7 +91,7 @@ export function useSearch() {
 
   async function resolve(): Promise<Place | null> {
     setStatus({ kind: 'searching' });
-    const places = Array.isArray(suggestions) ? suggestions : await fetchPlaces(wanted);
+    const places = suggestions.kind === 'places' ? suggestions.places : await fetchPlaces(wanted);
     const first = places[0];
     if (first === undefined) {
       setStatus({ kind: 'notFound', wanted });

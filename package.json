@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "npm run test -w backend"
+    "test": "npm run test -w backend && npm run test -w frontend"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

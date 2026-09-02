@@ -52,21 +52,6 @@
   color: var(--label);
 }
 
-.cap {
-  align-self: stretch;
-  margin: 0;
-  padding: 14px 18px;
-  font-size: 15px;
-  line-height: 1.5;
-  border: 1px solid var(--poor);
-  border-radius: 8px;
-}
-
-.capRule {
-  font-weight: 600;
-  color: var(--poor);
-}
-
 .factors {
   align-self: stretch;
   margin: 0 0 32px;
@@ -79,4 +64,18 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .block {
+    padding: 28px var(--page-padding) 40px;
+  }
+
+  .verdict {
+    font-size: 24px;
+  }
+
+  .reason {
+    font-size: 19px;
+  }
 }

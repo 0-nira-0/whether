@@ -1,13 +1,22 @@
-import type { Day } from '../../api/forecast';
+import type { ContextLine, Day } from '../../api/forecast';
 import { BAND_COLOUR, BAND_WORD } from '../../bands';
 import { longDate } from '../../dates';
+import { useUnits } from '../../hooks/useUnits';
+import { capSentence, contextSentence, factorSentence } from '../../sentences';
 import { FactorRow } from '../FactorRow/FactorRow';
 import { Qa } from '../Qa/Qa';
 import { ScoreRing } from '../ScoreRing/ScoreRing';
 import styles from './AnswerBlock.module.css';
 
-export function AnswerBlock({ day, context }: { day: Day; context: string[] }) {
-  const reason = day.cap?.sentence ?? day.factors[0]?.sentence;
+export function AnswerBlock({ day, context }: { day: Day; context: ContextLine[] }) {
+  const { units } = useUnits();
+  const leading = day.factors[0];
+  const reason =
+    day.cap !== null
+      ? capSentence(day.cap, units)
+      : leading === undefined
+        ? undefined
+        : factorSentence(leading, units);
   return (
     <section className={styles.block}>
       <ScoreRing score={day.score} band={day.band} />
@@ -16,18 +25,12 @@ export function AnswerBlock({ day, context }: { day: Day; context: string[] }) {
       </h2>
       {reason !== undefined && <p className={styles.reason}>{reason}</p>}
       {context.map((line) => (
-        <p key={line} className={styles.context}>
-          {line}
+        <p key={line.kind} className={styles.context}>
+          {contextSentence(line, units)}
         </p>
       ))}
       <p className={styles.hint}>Scroll to see why this score, and the measurements ↓</p>
       <h3 className={styles.heading}>Why {day.score}</h3>
-      {day.cap !== null && (
-        <p className={styles.cap}>
-          <strong className={styles.capRule}>Capped at {day.cap.ceiling}.</strong>{' '}
-          {day.cap.sentence}
-        </p>
-      )}
       <ul className={styles.factors}>
         {day.factors.map((factor) => (
           <FactorRow key={factor.name} factor={factor} />

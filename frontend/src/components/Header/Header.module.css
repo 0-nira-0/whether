@@ -22,14 +22,37 @@
   font-size: 21px;
 }
 
-.meta {
+.units {
   display: flex;
-  align-items: center;
-  gap: 28px;
-  font-size: 14px;
-  color: var(--body);
+  gap: 4px;
 }
 
-.units {
-  color: var(--muted);
+.unit {
+  min-width: 48px;
+  padding: 8px 14px;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+}
+
+.unit:hover {
+  border-color: var(--brand);
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .wordmark {
+    font-size: 19px;
+  }
+
+  .unit {
+    min-width: 40px;
+    padding: 6px 10px;
+  }
 }

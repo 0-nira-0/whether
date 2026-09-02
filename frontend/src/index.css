@@ -15,7 +15,6 @@
   --muted: #5c564c;
   --label: #84847d;
   --placeholder: #9b9b94;
-  --ghost: #b8ae9f;
 
   --excellent: #14503f;
   --good: #3d8265;
@@ -24,9 +23,6 @@
   --poor: #a8503a;
   --brand: #14503f;
   --brand-dark: #14453a;
-  --zone-good: #93bda6;
-  --zone-marginal: #ebd4a2;
-  --zone-poor: #e3c4b6;
 
   --page-padding: 40px;
   --radius: 10px;
@@ -61,4 +57,10 @@ button {
 input {
   font: inherit;
   color: inherit;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --page-padding: 16px;
+  }
 }
