@@ -1,0 +1,210 @@
+import type {
+  Band,
+  DaytimeWindow,
+  FactorDefinition,
+  IndoorComponent,
+  Provenance,
+} from './types.js';
+
+type Labelled<Shape> = Shape & { provenance: Provenance; source: string };
+
+export const ACTIVE_HOURS: Labelled<DaytimeWindow> = {
+  fromHour: 8,
+  toHour: 20,
+  provenance: 'Assumed',
+  source:
+    'one window for all four activities: a traveller is out between breakfast and dinner; rain at 3 a.m. is irrelevant to any of them',
+};
+
+export const OUTDOOR_FACTORS: FactorDefinition[] = [
+  {
+    name: 'Precipitation',
+    measure: 'precipitationMm',
+    unit: 'mm',
+    weight: 0.35,
+    curve: [
+      { at: 0, score: 100 },
+      { at: 3, score: 100 },
+      { at: 5, score: 90 },
+      { at: 8, score: 55 },
+      { at: 12, score: 0 },
+    ],
+    provenance: 'Sourced',
+    source:
+      'HCI:Urban daily precipitation bands, Scott et al. 2016; straight lines between bands are ours',
+  },
+  {
+    name: 'Temperature',
+    measure: 'temperatureC',
+    unit: '°C',
+    weight: 0.3,
+    curve: [
+      { at: -5, score: 0 },
+      { at: 18, score: 100 },
+      { at: 26, score: 100 },
+      { at: 36, score: 0 },
+    ],
+    provenance: 'Assumed',
+    source:
+      'shaped by the HCI thermal-comfort component; the band is chosen for a leisure traveller who walks for a few hours',
+  },
+  {
+    name: 'Wind',
+    measure: 'windKmh',
+    unit: 'km/h',
+    weight: 0.2,
+    curve: [
+      { at: 0, score: 100 },
+      { at: 10, score: 100 },
+      { at: 50, score: 0 },
+    ],
+    provenance: 'Assumed',
+    source:
+      'HCI rates wind by physical disruption rather than thermal effect; the numbers are ours',
+  },
+  {
+    name: 'Cloud cover',
+    measure: 'cloudCoverPct',
+    unit: '%',
+    weight: 0.15,
+    curve: [
+      { at: 0, score: 85 },
+      { at: 10, score: 100 },
+      { at: 30, score: 100 },
+      { at: 100, score: 40 },
+    ],
+    provenance: 'Sourced',
+    source:
+      'HCI optimum is 11–20 % cover, not clear sky; the overcast floor of 40 and clear-sky 85 are ours',
+  },
+];
+
+export const THUNDERSTORM_CODES: Labelled<{ codes: readonly number[] }> = {
+  codes: [95, 96, 99],
+  provenance: 'Sourced',
+  source: 'WMO weather interpretation codes as listed in the Open-Meteo docs',
+};
+
+export const FREEZING_RAIN_CODES: Labelled<{ codes: readonly number[] }> = {
+  codes: [56, 57, 66, 67],
+  provenance: 'Sourced',
+  source: 'WMO codes for freezing drizzle and freezing rain, Open-Meteo docs',
+};
+
+export const THUNDERSTORM_CAP: Labelled<{ ceiling: number }> = {
+  ceiling: 15,
+  provenance: 'Assumed',
+  source:
+    'a thunderstorm hour in the window ends the day for any outdoor plan; the ceiling is ours',
+};
+
+export const GUST_CAP: Labelled<{
+  aboveKmh: number;
+  ceiling: { outdoor: number; skiing: number };
+}> = {
+  aboveKmh: 65,
+  ceiling: { outdoor: 30, skiing: 20 },
+  provenance: 'Sourced',
+  source:
+    'chairlift wind holds start around 40 mph (~64 km/h), outdoors.codidact.com/posts/53653; the outdoor ceiling is ours',
+};
+
+export const INDOOR: Labelled<{
+  base: number;
+  maxRelief: number;
+  maxFriction: number;
+  relief: IndoorComponent[];
+  friction: IndoorComponent[];
+}> = {
+  base: 65,
+  maxRelief: 30,
+  maxFriction: 45,
+  provenance: 'Assumed',
+  source:
+    'a museum is a fine plan on an ordinary day, so the base is well above the middle; the ranges are fixed by the blizzard test — gale plus heavy snow must land near 50, below a drizzle day',
+  relief: [
+    {
+      name: 'Precipitation',
+      measure: 'precipitationMm',
+      unit: 'mm',
+      curve: [
+        { at: 0, score: 0 },
+        { at: 8, score: 30 },
+      ],
+      provenance: 'Assumed',
+      source:
+        'a full relief at 8 mm in the daytime window, the point where outdoor precipitation scores 55',
+    },
+    {
+      name: 'Temperature',
+      measure: 'temperatureC',
+      unit: '°C',
+      curve: [
+        { at: -10, score: 30 },
+        { at: 5, score: 0 },
+        { at: 28, score: 0 },
+        { at: 36, score: 30 },
+      ],
+      provenance: 'Assumed',
+      source: 'heat above 28 °C and cold below 5 °C push a traveller indoors',
+    },
+  ],
+  friction: [
+    {
+      name: 'Wind gusts',
+      measure: 'gustsKmh',
+      unit: 'km/h',
+      curve: [
+        { at: 50, score: 0 },
+        { at: 90, score: 45 },
+      ],
+      provenance: 'Assumed',
+      source: 'gusts over 50 km/h start to make the walk unpleasant; 90 km/h is a severe gale',
+    },
+    {
+      name: 'Thunderstorm',
+      measure: 'thunderstormHours',
+      unit: 'h',
+      curve: [
+        { at: 0, score: 0 },
+        { at: 1, score: 30 },
+      ],
+      provenance: 'Assumed',
+      source: 'one thunderstorm hour in the window is enough to make getting there a problem',
+    },
+    {
+      name: 'Freezing rain',
+      measure: 'freezingRainHours',
+      unit: 'h',
+      curve: [
+        { at: 0, score: 0 },
+        { at: 1, score: 30 },
+      ],
+      provenance: 'Assumed',
+      source: 'ice underfoot is the journey hazard: getting there, not being there',
+    },
+    {
+      name: 'Snowfall',
+      measure: 'snowfallCm',
+      unit: 'cm',
+      curve: [
+        { at: 0, score: 0 },
+        { at: 10, score: 25 },
+      ],
+      provenance: 'Assumed',
+      source: 'heavy snowfall slows every way of getting across town',
+    },
+  ],
+};
+
+export const BANDS: Labelled<{ edges: { from: number; band: Band }[] }> = {
+  edges: [
+    { from: 85, band: 'Excellent' },
+    { from: 70, band: 'Good' },
+    { from: 50, band: 'Decent' },
+    { from: 25, band: 'Mediocre' },
+    { from: 0, band: 'Poor' },
+  ],
+  provenance: 'Assumed',
+  source: 'display only; ranking uses the raw 0–100',
+};
