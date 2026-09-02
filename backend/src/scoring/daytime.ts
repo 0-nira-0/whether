@@ -43,7 +43,7 @@ export function max(values: number[]): number | null {
   return values.length === 0 ? null : Math.max(...values);
 }
 
-export function countCodes(codes: number[], wanted: readonly number[]): number {
+function countCodes(codes: number[], wanted: readonly number[]): number {
   return codes.filter((code) => wanted.includes(code)).length;
 }
 

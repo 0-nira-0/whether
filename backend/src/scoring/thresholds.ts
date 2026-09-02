@@ -6,6 +6,7 @@ import type {
   Measure,
   Provenance,
   SeaMeasure,
+  SnowMeasure,
 } from './types.js';
 
 type Labelled<Shape> = Shape & { provenance: Provenance; source: string };
@@ -142,6 +143,95 @@ export const SURFING_FACTORS: FactorDefinition<SeaMeasure>[] = [
     source: 'the wetsuit-free comfort band for someone without specialist equipment',
   },
 ];
+
+export const SKIING_FACTORS: FactorDefinition<SnowMeasure>[] = [
+  {
+    name: 'Snow depth',
+    measure: 'snowDepthCm',
+    unit: 'cm',
+    weight: 0.35,
+    curve: [
+      { at: 0, score: 0 },
+      { at: 30, score: 100 },
+    ],
+    provenance: 'Sourced',
+    source:
+      'a travel guide (theonehundredcollection.com, weak) puts 10–15 cm for beginners and 15–30 cm for intermediates; 30 cm is comfortable for anyone',
+  },
+  {
+    name: 'Fresh snow',
+    measure: 'freshSnowCm',
+    unit: 'cm',
+    weight: 0.15,
+    curve: [
+      { at: 0, score: 0 },
+      { at: 5, score: 100 },
+      { at: 25, score: 100 },
+      { at: 45, score: 0 },
+    ],
+    provenance: 'Assumed',
+    source:
+      'a dusting to a good dump is the ideal; the same guide calls about 45 cm overnight unpredictable conditions, closures and grooming lag',
+  },
+  {
+    name: 'Temperature',
+    measure: 'temperatureC',
+    unit: '°C',
+    weight: 0.2,
+    curve: [
+      { at: -25, score: 0 },
+      { at: -7, score: 100 },
+      { at: 0, score: 100 },
+      { at: 8, score: 0 },
+    ],
+    provenance: 'Sourced',
+    source: 'the same guide (weak): between −7 °C and 0 °C is ideal; the outer limits are ours',
+  },
+  {
+    name: 'Wind gusts',
+    measure: 'gustsKmh',
+    unit: 'km/h',
+    weight: 0.2,
+    curve: [
+      { at: 0, score: 100 },
+      { at: 20, score: 100 },
+      { at: 65, score: 0 },
+    ],
+    provenance: 'Sourced',
+    source:
+      'lift wind holds start around 40 mph (~64 km/h), outdoors.codidact.com/posts/53653, gondolas earlier; the comfortable 20 km/h is ours',
+  },
+  {
+    name: 'Cloud cover',
+    measure: 'cloudCoverPct',
+    unit: '%',
+    weight: 0.1,
+    curve: [
+      { at: 0, score: 100 },
+      { at: 40, score: 100 },
+      { at: 100, score: 20 },
+    ],
+    provenance: 'Assumed',
+    source:
+      'clear to partly cloudy keeps the light flat-free; full overcast hides the terrain but does not close it',
+  },
+];
+
+export const SNOW_GATE: Labelled<{ minDepthM: number; minWeeklySnowfallCm: number }> = {
+  minDepthM: 0.01,
+  minWeeklySnowfallCm: 1,
+  provenance: 'Measured',
+  source:
+    'Bariloche in season shows only 2 cm of depth in town but 3.71 cm of weekly snowfall while Cerro Catedral is open; a 5 cm depth gate was a false negative there, so both terms are loose and either one passes',
+};
+
+export const SNOW_RING: Labelled<{ radiusKm: number; points: number }> = {
+  radiusKm: 5,
+  points: 6,
+  provenance: 'Measured',
+  source:
+    'six points at 5 km resolved six distinct cells at Chamonix (2670 m), Innsbruck (2107 m) and Zakopane (1594 m), mid-mountain heights where pistes are; 15 km was rejected as unmeasured and no longer around town',
+};
 
 export const FLAT_SEA_CAP: Labelled<{ belowM: number; ceiling: number }> = {
   belowM: 0.3,

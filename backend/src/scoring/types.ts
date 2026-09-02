@@ -26,7 +26,13 @@ export type SeaMeasurements = {
   thunderstormHours: number;
 };
 
+export type SnowMeasurements = DayMeasurements & {
+  snowDepthCm: number;
+  freshSnowCm: number;
+};
+
 export type Measure = Exclude<keyof DayMeasurements, 'date'>;
+export type SnowMeasure = Exclude<keyof SnowMeasurements, 'date'>;
 export type SeaMeasure = Exclude<keyof SeaMeasurements, 'date'>;
 
 export type FactorDefinition<Key extends string> = {
