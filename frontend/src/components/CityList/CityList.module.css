@@ -13,6 +13,7 @@
   border-radius: 0 0 var(--radius) var(--radius);
   box-shadow: 0 12px 24px rgb(28 27 25 / 6%);
   overflow: hidden;
+  animation: drop 160ms var(--ease);
 }
 
 .row {
@@ -23,6 +24,7 @@
   font-size: 15px;
   background: none;
   border: none;
+  transition: background-color var(--quick) var(--ease);
 }
 
 .row:hover {
@@ -56,5 +58,12 @@
 @keyframes turn {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
   }
 }

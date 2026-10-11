@@ -35,6 +35,7 @@
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: 8px;
+  transition: border-color var(--quick) var(--ease);
 }
 
 .unit:hover {

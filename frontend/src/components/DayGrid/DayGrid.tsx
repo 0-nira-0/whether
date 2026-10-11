@@ -12,12 +12,13 @@ type DayGridProps = {
 export function DayGrid({ days, selected, onSelect }: DayGridProps) {
   return (
     <div className={styles.grid} role="tablist" aria-label="Days">
-      {days.map((day) => (
+      {days.map((day, index) => (
         <button
           key={day.date}
           type="button"
           role="tab"
           aria-selected={day.date === selected}
+          style={{ animationDelay: `${String(index * 40)}ms` }}
           className={day.date === selected ? styles.cardSelected : styles.card}
           onClick={() => {
             onSelect(day.date);

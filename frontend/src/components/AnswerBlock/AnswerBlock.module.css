@@ -8,10 +8,12 @@
   border: 1px solid var(--card-border);
   border-bottom: none;
   border-radius: var(--radius) var(--radius) 0 0;
+  animation: rise 360ms var(--ease) 120ms backwards;
 }
 
 .verdict {
   margin: 0;
+  animation: rise 240ms var(--ease);
   font-family: var(--serif);
   font-weight: 400;
   font-size: 28px;
@@ -77,5 +79,12 @@
 
   .reason {
     font-size: 19px;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }

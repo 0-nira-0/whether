@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  animation: breathe 1.6s ease-in-out infinite;
 }
 
 .grid {
@@ -16,6 +15,7 @@
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
+  animation: breathe 1.6s ease-in-out infinite;
 }
 
 .block {
@@ -24,6 +24,8 @@
   border: 1px solid var(--card-border);
   border-bottom: none;
   border-radius: var(--radius) var(--radius) 0 0;
+  animation: breathe 1.6s ease-in-out infinite;
+  animation-delay: 560ms;
 }
 
 @keyframes breathe {

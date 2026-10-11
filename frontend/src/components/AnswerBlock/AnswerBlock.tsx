@@ -14,7 +14,7 @@ export function AnswerBlock({ day, context }: { day: Day; context: ContextLine[]
   return (
     <section className={styles.block}>
       <ScoreRing score={day.score} band={day.band} />
-      <h2 className={styles.verdict} style={{ color: BAND_COLOUR[day.band] }}>
+      <h2 key={day.date} className={styles.verdict} style={{ color: BAND_COLOUR[day.band] }}>
         {BAND_WORD[day.band]} on {longDate(day.date)}
       </h2>
       {capped !== undefined && <p className={styles.reason}>{capped}</p>}

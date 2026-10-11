@@ -30,6 +30,7 @@
   border: 1px solid var(--field-border);
   border-radius: var(--radius);
   outline: none;
+  transition: border-color var(--quick) var(--ease);
 }
 
 .field::placeholder {
@@ -60,6 +61,18 @@
   background: var(--brand);
   border: none;
   border-radius: var(--radius);
+  transition:
+    background-color var(--quick) var(--ease),
+    color var(--quick) var(--ease),
+    transform var(--quick) var(--ease);
+}
+
+.button:not(:disabled):hover {
+  background: var(--brand-dark);
+}
+
+.button:not(:disabled):active {
+  transform: scale(0.98);
 }
 
 .button:disabled {
@@ -75,6 +88,14 @@
   padding: 15px 26px;
   font-size: 15px;
   color: var(--body);
+  transition:
+    background-color var(--quick) var(--ease),
+    color var(--quick) var(--ease),
+    border-color var(--quick) var(--ease);
+}
+
+.segment:hover {
+  background: var(--row-highlight);
 }
 
 .segments > :first-child {
@@ -94,13 +115,36 @@
   font-weight: 600;
 }
 
+.segmentActive:hover {
+  background: var(--brand-dark);
+}
+
 .progress {
   position: absolute;
   left: 0;
   bottom: -1px;
   height: 2px;
   width: 100%;
+  overflow: hidden;
+}
+
+.progress::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 35%;
   background: var(--brand);
+  animation: slide 1.2s var(--ease) infinite;
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(290%);
+  }
 }
 
 @media (max-width: 640px) {

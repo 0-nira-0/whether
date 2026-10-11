@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 20px;
   padding: 20px var(--page-padding) 0;
+  animation: rise 360ms var(--ease);
 }
 
 .place {
@@ -16,5 +17,12 @@
 @media (max-width: 640px) {
   .result {
     gap: 14px;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }

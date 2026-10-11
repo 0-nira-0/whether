@@ -1,4 +1,5 @@
 .block {
+  animation: rise 360ms var(--ease);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -47,5 +48,12 @@
 
   .headline {
     font-size: 26px;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }

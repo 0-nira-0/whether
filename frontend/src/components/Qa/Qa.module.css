@@ -25,6 +25,7 @@
 .plus {
   color: var(--label);
   font-size: 20px;
+  transition: transform 200ms var(--ease);
 }
 
 .row[open] .plus {
@@ -39,4 +40,12 @@
   line-height: 1.6;
   color: var(--body);
   text-wrap: pretty;
+  animation: rise 240ms var(--ease);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
 }

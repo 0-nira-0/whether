@@ -1,0 +1,12 @@
+.arc {
+  transition:
+    stroke-dasharray 600ms var(--ease),
+    stroke 240ms var(--ease);
+  animation: sweep 800ms var(--ease) 120ms backwards;
+}
+
+@keyframes sweep {
+  from {
+    stroke-dasharray: 0 400;
+  }
+}

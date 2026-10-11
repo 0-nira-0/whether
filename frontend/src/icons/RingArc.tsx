@@ -1,3 +1,5 @@
+import styles from './RingArc.module.css';
+
 const RADIUS = 54;
 const STROKE = 9;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -16,7 +18,8 @@ export function RingArc({ fraction, colour, size, label }: RingArcProps) {
         fill="none"
         stroke={colour}
         strokeWidth={STROKE}
-        strokeDasharray={`${String(filled)} ${String(CIRCUMFERENCE)}`}
+        className={styles.arc}
+        style={{ strokeDasharray: `${String(filled)} ${String(CIRCUMFERENCE)}` }}
         transform="rotate(-90 64 64)"
       />
     </svg>

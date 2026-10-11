@@ -1,4 +1,5 @@
 .centre {
+  animation: rise 360ms var(--ease);
   flex: 1;
   display: flex;
   align-items: center;
@@ -24,5 +25,12 @@
 
   .line {
     font-size: 36px;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }
