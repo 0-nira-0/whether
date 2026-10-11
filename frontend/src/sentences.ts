@@ -11,11 +11,15 @@ export function factorSentence(factor: Factor, units: Units): string {
   }
   const { from, to, openBelow, openAbove } = factor.ideal;
   const bound = (edge: number) => measurement(edge, factor.unit, units, factor.decimals);
+  const lowerBound = (edge: number) => {
+    const shown = inUnits(edge, factor.unit, units);
+    return number(shown.value, factor.decimals, shown.digits);
+  };
   const range = openBelow
     ? `up to ${bound(to)}`
     : openAbove
       ? `from ${bound(from)}`
-      : `${number(inUnits(from, factor.unit, units).value, factor.decimals)} to ${bound(to)}`;
+      : `${lowerBound(from)} to ${bound(to)}`;
   const where = placementOf(factor);
   if (factor.effect !== null && where === 'inside') {
     return `${measured}, ${effectClause(factor.effect, factor.contribution)}`;

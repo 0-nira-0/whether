@@ -5,7 +5,7 @@ const IMPERIAL: Units = { temperature: 'FAHRENHEIT', length: 'IMPERIAL' };
 
 describe('showing a metric measurement in the units the reader chose', () => {
   it('leaves everything alone in metric', () => {
-    expect(inUnits(20, '°C', METRIC)).toEqual({ value: 20, unit: '°C' });
+    expect(inUnits(20, '°C', METRIC)).toMatchObject({ value: 20, unit: '°C' });
     expect(measurement(16, 'km/h', METRIC)).toBe('16 km/h');
   });
 
@@ -16,6 +16,13 @@ describe('showing a metric measurement in the units the reader chose', () => {
     expect(measurement(16, 'km/h', { temperature: 'FAHRENHEIT', length: 'METRIC' })).toBe(
       '16 km/h',
     );
+  });
+
+  it('keeps small rainfall readable in inches', () => {
+    expect(measurement(1, 'mm', IMPERIAL)).toBe('0.04 in');
+    expect(measurement(3, 'mm', IMPERIAL)).toBe('0.12 in');
+    expect(measurement(25.4, 'mm', IMPERIAL)).toBe('1 in');
+    expect(measurement(5, 'cm', IMPERIAL)).toBe('2 in');
   });
 
   it('passes percent, hours and seconds through untouched', () => {
