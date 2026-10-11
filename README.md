@@ -1,5 +1,7 @@
 # Whether
 
+You can open the live version here: [whether-lilac-phi.vercel.app](https://whether-lilac-phi.vercel.app/)
+
 Whether helps travellers decide which of the next 7 days has the best weather for skiing,
 surfing, outdoor sightseeing or indoor sightseeing in a selected city or town.
 
