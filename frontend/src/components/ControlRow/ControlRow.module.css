@@ -147,10 +147,34 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 960px) {
   .row {
     flex-direction: column;
     align-items: stretch;
+    gap: 14px;
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  .fieldWrap {
+    flex: 1;
+    width: auto;
+  }
+
+  .segments {
+    flex: none;
+    justify-content: stretch;
+  }
+
+  .segment {
+    flex: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .row {
     gap: 12px;
     padding-top: 14px;
     padding-bottom: 14px;
@@ -162,6 +186,7 @@
   }
 
   .fieldWrap {
+    flex: none;
     width: 100%;
   }
 
@@ -169,13 +194,7 @@
     width: 100%;
   }
 
-  .segments {
-    flex: none;
-    justify-content: stretch;
-  }
-
   .segment {
-    flex: 1;
     padding: 12px 0;
     font-size: 14px;
   }

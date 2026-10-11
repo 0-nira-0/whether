@@ -24,7 +24,8 @@
   --brand: #14503f;
   --brand-dark: #14453a;
 
-  --page-padding: 40px;
+  --gutter: 40px;
+  --page-padding: max(var(--gutter), calc((100vw - 1200px) / 2));
   --radius: 10px;
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -64,7 +65,7 @@ input {
 
 @media (max-width: 640px) {
   :root {
-    --page-padding: 16px;
+    --gutter: 16px;
   }
 }
 

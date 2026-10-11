@@ -34,6 +34,16 @@
   }
 }
 
+@media (max-width: 900px) {
+  .grid {
+    gap: 8px;
+  }
+
+  .card {
+    height: 100px;
+  }
+}
+
 @media (max-width: 640px) {
   .grid {
     gap: 6px;

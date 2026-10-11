@@ -68,6 +68,12 @@
   gap: 14px;
 }
 
+@media (max-width: 900px) {
+  .block {
+    padding: 36px 32px 48px;
+  }
+}
+
 @media (max-width: 640px) {
   .block {
     padding: 28px var(--page-padding) 40px;
