@@ -1,6 +1,7 @@
 {
   "name": "whether",
   "private": true,
+  "type": "module",
   "workspaces": [
     "backend",
     "frontend"
@@ -8,7 +9,7 @@
   "scripts": {
     "dev:backend": "npm run dev -w backend",
     "dev:frontend": "npm run dev -w frontend",
-    "type-check": "npm run type-check -w backend && npm run type-check -w frontend",
+    "type-check": "tsc --noEmit && npm run type-check -w backend && npm run type-check -w frontend",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

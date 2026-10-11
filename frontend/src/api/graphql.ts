@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const ENDPOINT = '/graphql';
+const ENDPOINT = '/api/graphql';
 
 const envelope = z.object({
   data: z.unknown().optional(),

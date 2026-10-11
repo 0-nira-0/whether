@@ -5,7 +5,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/graphql': 'http://localhost:4000',
+      '/api/graphql': {
+        target: 'http://localhost:4000',
+        rewrite: () => '/graphql',
+      },
     },
   },
 });

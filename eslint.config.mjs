@@ -7,14 +7,14 @@ import prettier from 'eslint-config-prettier/flat';
 export default tseslint.config(
   { ignores: ['**/dist/**'] },
   {
-    files: ['{backend,frontend}/src/**/*.{ts,tsx}'],
+    files: ['{backend,frontend}/src/**/*.{ts,tsx}', 'api/**/*.ts'],
     extends: [js.configs.recommended, tseslint.configs.recommendedTypeChecked],
     languageOptions: {
       parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
     },
   },
   {
-    files: ['backend/src/**/*.ts'],
+    files: ['backend/src/**/*.ts', 'api/**/*.ts'],
     languageOptions: { globals: globals.node },
   },
   {
